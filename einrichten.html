@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SafeBand Armband einrichten – Notfallprofil erstellen.">
+  <title>Armband einrichten – SafeBand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav container">
+      <a href="index.html" class="logo-block">
+        <img src="assets/Safeband_logo.png" alt="SafeBand – Sicher. Verbunden. Geschützt." class="site-logo" width="132" height="40">
+      </a>
+      <button class="nav-toggle" aria-label="Menü öffnen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Start</a></li>
+        <li><a href="notfall.html?id=DEMO01">Demo</a></li>
+        <li><a href="einrichten.html" class="active">Einrichten</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Armband einrichten</h1>
+        <p>
+          Erstelle ein Notfallprofil für ein SafeBand-Armband. Die öffentlich sichtbaren Informationen
+          kannst du bewusst einschränken – Kontaktdaten bleiben geschützt.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container setup-layout">
+        <form id="setup-form" class="setup-form">
+          <h2>Profil-Daten</h2>
+
+          <div class="form-row">
+            <label for="band-id">Armband-ID *</label>
+            <input type="text" id="band-id" placeholder="z.B. SB-2026-001" required maxlength="20" pattern="[A-Za-z0-9\-]+">
+            <small>Nur Buchstaben, Zahlen und Bindestriche. Wird Teil der QR-Code-URL.</small>
+          </div>
+
+          <div class="form-row">
+            <label for="first-name">Vorname (öffentlich sichtbar) *</label>
+            <input type="text" id="first-name" placeholder="z.B. Luca" required maxlength="30">
+          </div>
+
+          <div class="form-row">
+            <label for="category">Kategorie *</label>
+            <select id="category" required>
+              <option value="">Bitte wählen …</option>
+              <option value="kind">Kind</option>
+              <option value="senior">Senior / ältere Person</option>
+              <option value="pflege">Pflege / Betreuung</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="public-note">Hinweis für Helfer (öffentlich)</label>
+            <textarea id="public-note" rows="2" placeholder="z.B. Spricht nur Deutsch, bitte ruhig ansprechen." maxlength="200"></textarea>
+          </div>
+
+          <div class="form-row">
+            <label for="medical-note">Medizinischer Hinweis (optional, öffentlich)</label>
+            <textarea id="medical-note" rows="2" placeholder="z.B. Allergie: Nüsse" maxlength="150"></textarea>
+            <small>Nur Angaben, die im Notfall für Helfer wichtig sind.</small>
+          </div>
+
+          <hr class="form-divider">
+
+          <h2>Notfallkontakt (nicht öffentlich)</h2>
+          <p class="form-hint">Diese Daten werden <strong>nicht</strong> auf der Notfallseite angezeigt.</p>
+
+          <div class="form-row">
+            <label for="contact-name">Name des Notfallkontakts *</label>
+            <input type="text" id="contact-name" placeholder="z.B. Anna Müller (Mutter)" required maxlength="60">
+          </div>
+
+          <div class="form-row">
+            <label for="contact-phone">Telefonnummer *</label>
+            <input type="tel" id="contact-phone" placeholder="+41 79 123 45 67" required maxlength="20">
+          </div>
+
+          <div class="form-row">
+            <label for="contact-email">E-Mail (optional)</label>
+            <input type="email" id="contact-email" placeholder="kontakt@beispiel.ch" maxlength="80">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Profil speichern</button>
+        </form>
+
+        <aside id="setup-result" class="setup-result hidden">
+          <h2>✅ Profil gespeichert</h2>
+          <p>Dieser Link wird auf dem QR-Code des Armbands hinterlegt:</p>
+          <div class="url-box">
+            <code id="result-url"></code>
+            <button type="button" id="copy-url-btn" class="btn btn-secondary btn-sm">Kopieren</button>
+          </div>
+          <a id="result-link" href="#" class="btn btn-primary btn-full" target="_blank">Notfallseite testen</a>
+
+          <div class="qr-section">
+            <h3>QR-Code Vorschau</h3>
+            <p>Scanne diesen Code mit dem Smartphone zum Testen:</p>
+            <div id="qr-code" class="qr-placeholder"></div>
+            <p class="qr-hint">Im Prototyp: QR-Code auf dem physischen Armband anbringen (Online-Druck).</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="footer-logo-wrap">
+          <img src="assets/Safeband_logo.png" alt="SafeBand" class="site-logo site-logo--sm" width="106" height="32">
+        </div>
+        <p class="footer-tagline">Sicher. Verbunden. Geschützt.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer Navigation">
+        <a href="index.html">Start</a>
+        <a href="notfall.html?id=DEMO01">Demo</a>
+        <a href="einrichten.html">Einrichten</a>
+        <a href="datenschutz.html">Datenschutz</a>
+        <a href="index.html#kontakt">Kontakt</a>
+      </nav>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; 2026 SafeBand – Projektarbeit TEKO</p>
+    </div>
+  </footer>
+
+  <script src="js/storage.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/einrichten.js"></script>
+</body>
+</html>

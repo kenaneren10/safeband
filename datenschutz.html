@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SafeBand Datenschutz – Schutz personenbezogener Daten.">
+  <title>Datenschutz – SafeBand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav container">
+      <a href="index.html" class="logo-block">
+        <img src="assets/Safeband_logo.png" alt="SafeBand – Sicher. Verbunden. Geschützt." class="site-logo" width="132" height="40">
+      </a>
+      <button class="nav-toggle" aria-label="Menü öffnen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Start</a></li>
+        <li><a href="notfall.html?id=DEMO01">Demo</a></li>
+        <li><a href="einrichten.html">Einrichten</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Datenschutz</h1>
+        <p>SafeBand legt grossen Wert auf den Schutz personenbezogener Daten gemäss DSGVO-Grundsätzen.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container legal-content">
+        <article>
+          <h2>Grundsatz der Anonymisierung</h2>
+          <p>
+            SafeBand ist so konzipiert, dass sensible persönliche Daten <strong>nicht öffentlich sichtbar</strong> sind.
+            Auf der Notfallseite werden nur die Informationen angezeigt, die für Helfer im Ernstfall notwendig sind
+            (z.B. Vorname, Kategorie, medizinische Hinweise).
+          </p>
+          <p>
+            Telefonnummern, E-Mail-Adressen und vollständige Namen der Notfallkontakte sind auf der öffentlichen
+            Notfallseite <strong>nicht einsehbar</strong>.
+          </p>
+        </article>
+
+        <article>
+          <h2>Kontaktfunktion</h2>
+          <p>
+            Die anonymisierte Kontaktfunktion ermöglicht es Helfern, Notfallkontakte zu benachrichtigen,
+            ohne deren Kontaktdaten einsehen zu müssen. Im Prototyp werden Nachrichten lokal gespeichert
+            und simuliert – in einer produktiven Version würde die Weiterleitung über einen sicheren Server erfolgen.
+          </p>
+        </article>
+
+        <article>
+          <h2>Datensparsamkeit</h2>
+          <p>Es werden nur folgende Daten erhoben:</p>
+          <ul class="tip-list">
+            <li>Öffentlich: Vorname, Kategorie, Hinweise für Helfer, optionale medizinische Angaben</li>
+            <li>Geschützt: Name, Telefon und E-Mail des Notfallkontakts</li>
+            <li>Bei Kontaktaufnahme: Standort, Nachricht und optional Name des Helfers</li>
+          </ul>
+        </article>
+
+        <article>
+          <h2>Prototyp-Hinweis</h2>
+          <p>
+            Diese Webseite ist ein funktionsfähiger Prototyp im Rahmen einer Schulprojektarbeit.
+            Daten werden im Browser (localStorage) gespeichert und dienen Demonstrationszwecken.
+            Für den produktiven Einsatz wäre ein sicheres Backend mit verschlüsselter Datenspeicherung erforderlich.
+          </p>
+        </article>
+
+        <article>
+          <h2>Verantwortlich</h2>
+          <p>
+            Projektteam SafeBand · TEKO<br>
+            Kontakt: über das Projektteam in der Präsentation
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="footer-logo-wrap">
+          <img src="assets/Safeband_logo.png" alt="SafeBand" class="site-logo site-logo--sm" width="106" height="32">
+        </div>
+        <p class="footer-tagline">Sicher. Verbunden. Geschützt.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer Navigation">
+        <a href="index.html">Start</a>
+        <a href="notfall.html?id=DEMO01">Demo</a>
+        <a href="einrichten.html">Einrichten</a>
+        <a href="datenschutz.html">Datenschutz</a>
+        <a href="index.html#kontakt">Kontakt</a>
+      </nav>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; 2026 SafeBand – Projektarbeit TEKO</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
