@@ -49,7 +49,8 @@ Projekt anlegen, als Region **Frankfurt (eu-central-1)** oder **Zürich** wähle
 Gesundheitsdaten sollten die Server in der EU/Schweiz stehen.
 
 Dann die Dateien in `supabase/migrations/` im SQL-Editor ausführen, in der Reihenfolge ihrer
-Nummerierung: `0001_init.sql`, `0002_lock_down_writes.sql`, `0003_contact_call.sql`.
+Nummerierung: `0001_init.sql`, `0002_lock_down_writes.sql`, `0003_contact_call.sql`,
+`0004_fix_consent_scopes.sql`.
 
 Die Migration legt am Ende einen Demo-Datensatz an: Band `DEMO0001` mit dem Profil „Luca" und
 einem erfundenen Notfallkontakt. Damit lässt sich `/n/DEMO0001` sofort ausprobieren. Vor dem
