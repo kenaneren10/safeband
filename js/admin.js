@@ -4,9 +4,9 @@
  * Deckt die drei Handgriffe im Betrieb ab: Codes erzeugen, Chips beschreiben,
  * Band beim Verpacken einer Bestellung zuordnen.
  *
- * Web NFC gibt es nur in Chrome auf Android. Auf allen anderen Geräten
- * funktionieren die Formulare per Tastatureingabe, nur Scannen und Beschreiben
- * entfallen.
+ * Beschrieben werden die Chips am iPhone mit „NFC Tools“, deshalb ist die
+ * Tabelle auf Kopieren ausgelegt. Web NFC (Chrome auf Android) kann dasselbe
+ * direkt im Browser und wird zusätzlich angeboten, wo es der Browser hergibt.
  */
 
 const NFC_AVAILABLE = "NDEFReader" in window;
@@ -125,10 +125,13 @@ function renderBatch(codes) {
         <tr data-code="${code}">
           <td><code>${code}</code></td>
           <td class="url-cell"><code>${bandUrl(code)}</code></td>
-          <td>
-            <button type="button" class="btn btn-secondary btn-sm write-btn" ${NFC_AVAILABLE ? "" : "disabled"}>
-              Auf Chip schreiben
-            </button>
+          <td class="action-cell">
+            <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
+            ${
+              NFC_AVAILABLE
+                ? '<button type="button" class="btn btn-secondary btn-sm write-btn">Auf Chip schreiben</button>'
+                : ""
+            }
             <span class="write-status"></span>
           </td>
         </tr>`
@@ -138,15 +141,83 @@ function renderBatch(codes) {
   document.getElementById("band-url-base").textContent = `${BAND_URL_BASE}/…`;
   document.getElementById("batch-result").classList.remove("hidden");
 
+  document.querySelectorAll(".copy-btn").forEach((btn) => {
+    btn.addEventListener("click", () => copyBandUrl(btn.closest("tr")));
+  });
+
   document.querySelectorAll(".write-btn").forEach((btn) => {
     btn.addEventListener("click", () => writeTag(btn.closest("tr")));
   });
 }
 
+/**
+ * Legt die URL des Bandes in die Zwischenablage, damit sie in NFC Tools nur
+ * noch eingefügt werden muss. Abtippen wäre die wahrscheinlichste Fehlerquelle
+ * im ganzen Ablauf – ein vertippter Code landet gesperrt auf dem Chip.
+ */
+async function copyBandUrl(row) {
+  const url = bandUrl(row.dataset.code);
+  const status = row.querySelector(".write-status");
+
+  if (await copyText(url)) {
+    status.textContent = "Kopiert";
+    status.className = "write-status ok";
+    return;
+  }
+
+  // Die URL-Spalte ist auf dem Handy ausgeblendet, deshalb hier mit ausgeben:
+  // ohne sie liesse sich die Adresse gar nicht von Hand übernehmen.
+  status.textContent = `Kopieren ging nicht. Adresse: ${url}`;
+  status.className = "write-status error";
+}
+
+/**
+ * Erst die Clipboard-API, dann die Auswahl-Variante. Die API wirft je nach
+ * Browser und Fensterfokus, und ein einzelner Versuch würde bedeuten, dass die
+ * Adresse abgetippt werden muss – genau die Fehlerquelle, die der Knopf
+ * verhindern soll.
+ */
+async function copyText(text) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    /* weiter zur Auswahl-Variante */
+  }
+
+  try {
+    return copyViaSelection(text);
+  } catch {
+    return false;
+  }
+}
+
+/** Rückfalllösung ohne Clipboard-API: Text auswählen und kopieren lassen. */
+function copyViaSelection(text) {
+  const field = document.createElement("textarea");
+  field.value = text;
+  field.setAttribute("readonly", "");
+  field.style.position = "fixed";
+  field.style.top = "0";
+  field.style.opacity = "0";
+  document.body.appendChild(field);
+  field.focus();
+  field.select();
+  field.setSelectionRange(0, text.length);
+
+  const copied = document.execCommand("copy");
+  field.remove();
+  return copied;
+}
+
 function showNfcSupport() {
   document.getElementById("nfc-support").textContent = NFC_AVAILABLE
-    ? "NFC bereit – Chips können direkt hier beschrieben werden."
-    : "Kein Web NFC (nur Chrome auf Android). CSV herunterladen und mit einem Encoder beschreiben.";
+    ? "Dieser Browser kann Chips direkt beschreiben – alternativ zur Anleitung unten."
+    : "Chips werden mit „NFC Tools“ beschrieben – Anleitung unterhalb der Tabelle.";
+
+  if (NFC_AVAILABLE) document.getElementById("scan-btn").classList.remove("hidden");
 }
 
 /**
@@ -212,7 +283,17 @@ function initAssign() {
     hide("assign-success");
 
     const btn = document.getElementById("assign-btn");
-    const code = document.getElementById("assign-code").value.trim().toUpperCase();
+    const code = normalizeCode(document.getElementById("assign-code").value);
+
+    if (!code) {
+      showMessage(
+        "assign-error",
+        "Kein gültiger Band-Code erkannt. Erwartet werden acht Zeichen oder eine Adresse der Form " +
+          `${BAND_URL_BASE}/K7X2M9QP.`
+      );
+      return;
+    }
+
     btn.disabled = true;
 
     try {
@@ -285,10 +366,24 @@ function extractCode(message) {
   for (const record of message.records) {
     if (record.recordType !== "url" && record.recordType !== "absolute-url") continue;
 
-    const match = decoder.decode(record.data).match(/\/n\/([A-Z0-9]{8})\/?$/i);
-    if (match) return match[1].toUpperCase();
+    const code = normalizeCode(decoder.decode(record.data));
+    if (code) return code;
   }
   return null;
+}
+
+/**
+ * Nimmt den blossen Code ebenso wie die komplette Adresse, die Safari nach dem
+ * Scannen in der Adresszeile stehen hat. Einfügen ist beim Verpacken schneller
+ * als acht Zeichen abzutippen – und ein Tippfehler ordnet im schlimmsten Fall
+ * das Band einer fremden Person zu.
+ */
+function normalizeCode(input) {
+  const value = String(input || "").trim();
+  const fromUrl = value.match(/(?:\/n\/|[?&]id=)([A-Z0-9]{8})/i);
+
+  if (fromUrl) return fromUrl[1].toUpperCase();
+  return /^[A-Z0-9]{8}$/i.test(value) ? value.toUpperCase() : null;
 }
 
 // --- Schritt 3: Sperren -----------------------------------------------------
@@ -299,7 +394,12 @@ function initDisable() {
     hide("disable-error");
     hide("disable-success");
 
-    const code = document.getElementById("disable-code").value.trim().toUpperCase();
+    const code = normalizeCode(document.getElementById("disable-code").value);
+
+    if (!code) {
+      showMessage("disable-error", "Kein gültiger Band-Code erkannt.");
+      return;
+    }
 
     try {
       await setBandStatus(code, "disabled");

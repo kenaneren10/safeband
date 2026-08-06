@@ -25,9 +25,16 @@ Kunde bekommt seinen persönlichen Verwaltungslink – der bleibt bei ihm und ha
 nichts zu tun.
 
 **Versand**
-Beim Verpacken unter `/admin.html` das Band ans Handy halten (oder den Code abtippen), die
-offene Bestellung wählen, zuordnen. Ab diesem Moment zeigt das Band auf das Profil. Der Kunde
-packt aus, tippt drauf, es läuft.
+Beim Verpacken den Code des Bandes mit NFC Tools auslesen (Reiter „Lesen"), die angezeigte
+Adresse in `/admin.html` ins Feld „Band-Code oder gescannte Adresse" einfügen – der Code wird
+automatisch herausgelesen –, die offene Bestellung wählen, zuordnen. Ab diesem Moment zeigt das
+Band auf das Profil. Der Kunde packt aus, tippt drauf, es läuft.
+
+Das Auslesen über NFC Tools ist bewusst der empfohlene Weg: Es braucht keine Verbindung und
+zählt nicht gegen die Missbrauchssperre. Hält man das Band stattdessen ans gesperrte iPhone und
+tippt das Banner an, öffnet Safari die Notfallseite mit „nicht gefunden" – korrekt, denn das Band
+hat noch kein Profil. Diese Fehlgriffe sind aber auf 20 pro 10 Minuten und IP begrenzt, weshalb
+das Verpacken einer grösseren Charge auf diesem Weg mittendrin blockiert.
 
 **Notfall**
 Ein Helfer hält das Handy ans Band und landet auf `/n/CODE`. Er sieht Vorname, Kategorie und
@@ -73,7 +80,7 @@ In `js/config.js` eintragen:
 |------|-------|
 | `SUPABASE_URL` | Project Settings → Data API → Project URL |
 | `SUPABASE_PUBLISHABLE_KEY` | Project Settings → API Keys → Publishable key (`sb_publishable_…`) |
-| `BAND_URL_ORIGIN` | leer lassen, solange keine feste Domain steht – dann gilt die gerade geöffnete Adresse. Auf `https://safeband.ch` setzen, sobald die Domain live ist |
+| `BAND_URL_ORIGIN` | die endgültige Domain, aktuell `https://www.safeband.ch` – sie landet unveränderbar auf den Chips |
 | `PRIVACY_POLICY_VERSION` | bei jeder inhaltlichen Änderung an `datenschutz.html` hochzählen |
 
 `BAND_URL_ORIGIN` muss stimmen, **bevor** Chips beschrieben werden: die Chips werden
@@ -100,21 +107,30 @@ Statisches Hosting, Konfiguration liegt für beide Anbieter bei: `netlify.toml` 
 
 ## Chips beschreiben
 
-**Bis ~50 Stück:** direkt in `/admin.html` über Web NFC (nur Chrome auf Android). Die Seite
-schreibt die URL und sperrt den Chip anschliessend.
+Standardweg ist das iPhone mit der App **NFC Tools** (kostenlos, iOS 13+ ab iPhone 7). Pro Band:
 
-**Grössere Mengen:** CSV in `/admin.html` herunterladen und mit einem USB-Encoder in einem
-Durchgang bespielen.
+1. In `/admin.html` beim gewünschten Code auf **„URL kopieren"** tippen.
+2. NFC Tools → **Schreiben** → **Eine Aufzeichnung hinzufügen** → **URL / URI**, Adresse
+   einfügen, **OK**.
+3. **Schreiben** antippen und das Band an das obere Ende der iPhone-Rückseite halten.
+4. Gegenlesen: App schliessen, Band nochmals anhalten. Es muss ein Banner mit
+   `www.safeband.ch` erscheinen, das auf die Notfallseite führt.
+5. Erst dann sperren: NFC Tools → **Sonstige** → **Tag sperren**.
+
+Jedes Band bekommt seine eigene Adresse – zwei Chips mit derselben URL zeigen auf dasselbe
+Profil.
+
+Schritt 4 vor Schritt 5 ist der Grund, warum die Reihenfolge in der Anleitung steht: Ein falsch
+beschriebener Chip lässt sich nach dem Sperren nicht mehr korrigieren und ist Ausschuss.
+Umgekehrt ist der Schreibschutz kein optionaler Feinschliff – ein offener Chip lässt sich von
+jedem Passanten mit einem Handy überschreiben.
+
+**Alternativen.** In Chrome auf Android blendet `/admin.html` pro Zeile zusätzlich „Auf Chip
+schreiben" ein und erledigt Schreiben und Sperren in einem Durchgang. Für grössere Mengen die
+CSV herunterladen und mit einem USB-Encoder in einem Durchgang bespielen.
 
 Empfohlene Hardware: **NTAG213** (144 Byte, reicht für die URL) oder NTAG215, wenn ihr später
 mehr unterbringen wollt.
-
-Der Schreibschutz ist kein optionaler Feinschliff: ein offener Chip lässt sich von jedem
-Passanten mit einem Handy überschreiben.
-
-Vor dem Schreibschutz einmal gegenlesen, was tatsächlich auf dem Chip steht – die Adresse muss
-auf `/n/` plus achtstelligem Code enden. Ein falsch beschriebener Chip lässt sich nach dem
-Sperren nicht mehr korrigieren und ist damit Ausschuss.
 
 ## Datenschutz
 

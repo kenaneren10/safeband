@@ -22,15 +22,15 @@ const PRIVACY_POLICY_VERSION = "2026-08-06";
 /**
  * Domain für die Kurz-URL auf dem NFC-Chip.
  *
- * Leer lassen, solange es keine feste Produktionsdomain gibt: die Basis wird
- * dann aus der gerade geöffneten Adresse abgeleitet und stimmt damit lokal
- * ebenso wie auf jeder Vercel-Adresse.
+ * Fest verdrahtet, weil beschriebene Chips gesperrt werden und ihre Adresse
+ * sich danach nicht mehr ändern lässt. Ohne diesen Wert würde die Basis aus
+ * der gerade geöffneten Seite abgeleitet – wer das Panel einmal über eine
+ * Vorschau-Adresse öffnet, brennt eine tote URL dauerhaft auf die Bänder.
  *
- * Auf "https://safeband.ch" setzen, sobald die Domain live ist und auf das
- * Deployment zeigt. Erst ab diesem Moment dürfen Chips beschrieben werden:
- * sie werden schreibgeschützt, ihre URL lässt sich danach nicht mehr ändern.
+ * "www" ist Absicht: safeband.ch leitet dorthin um, und ein Umweg weniger
+ * heisst im Notfall eine Fehlerquelle weniger.
  */
-const BAND_URL_ORIGIN = "";
+const BAND_URL_ORIGIN = "https://www.safeband.ch";
 
 /** Basis der Kurz-URL, die auf den NFC-Chip geschrieben wird. */
 const BAND_URL_BASE = `${BAND_URL_ORIGIN || window.location.origin}/n`;
