@@ -1,6 +1,13 @@
 [build]
   publish = "."
 
+# Pretty URLs ist bei Netlify standardmässig an und schreibt /seite.html auf
+# /seite/ um. Alle internen Links hier enden auf .html, und /verwalten.html?t=…
+# hängt an seinem Query-Parameter – deshalb bleibt die Umschreibung aus.
+# Gegenstück zu "cleanUrls": false in vercel.json.
+[build.processing.html]
+  pretty_urls = false
+
 # Kurz-URL für den NFC-Chip: /n/K7X2M9QP -> notfall.html?id=K7X2M9QP
 # Status 200 statt 301, damit die kurze Adresse in der Adresszeile stehen bleibt.
 [[redirects]]
@@ -35,4 +42,5 @@
   for = "/admin.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
     Cache-Control = "no-store"

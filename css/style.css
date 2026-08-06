@@ -1217,6 +1217,10 @@ a:hover {
   padding: 0.3rem 0;
 }
 
+.summary-row span + span {
+  white-space: nowrap;
+}
+
 .summary-row--total {
   margin-top: 0.4rem;
   padding-top: 0.7rem;
@@ -1250,6 +1254,11 @@ a:hover {
 
 .page-notice a {
   font-weight: 600;
+}
+
+.page-notice--top {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
 }
 
 /* Legal */
@@ -1563,6 +1572,24 @@ a:hover {
   text-transform: uppercase;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   letter-spacing: 0.08em;
+}
+
+.url-warning {
+  margin: 1.5rem 0 0;
+  padding: 1rem 1.25rem;
+  background: var(--color-alert-bg);
+  border-left: 4px solid var(--color-alert);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-navy);
+}
+
+.url-warning code {
+  word-break: break-all;
+  background: rgba(8, 42, 74, 0.06);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
 }
 
 .batch-actions {

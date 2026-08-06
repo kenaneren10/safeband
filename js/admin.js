@@ -135,6 +135,7 @@ function renderBatch(codes) {
     )
     .join("");
 
+  document.getElementById("band-url-base").textContent = `${BAND_URL_BASE}/…`;
   document.getElementById("batch-result").classList.remove("hidden");
 
   document.querySelectorAll(".write-btn").forEach((btn) => {

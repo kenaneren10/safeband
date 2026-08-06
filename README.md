@@ -67,8 +67,12 @@ In `js/config.js` eintragen:
 |------|-------|
 | `SUPABASE_URL` | Project Settings → Data API → Project URL |
 | `SUPABASE_PUBLISHABLE_KEY` | Project Settings → API Keys → Publishable key (`sb_publishable_…`) |
-| `BAND_URL_BASE` | eure Domain plus `/n`, z. B. `https://safeband.ch/n` |
+| `BAND_URL_ORIGIN` | leer lassen, solange keine feste Domain steht – dann gilt die gerade geöffnete Adresse. Auf `https://safeband.ch` setzen, sobald die Domain live ist |
 | `PRIVACY_POLICY_VERSION` | bei jeder inhaltlichen Änderung an `datenschutz.html` hochzählen |
+
+`BAND_URL_ORIGIN` muss stimmen, **bevor** Chips beschrieben werden: die Chips werden
+schreibgeschützt, ihre Adresse lässt sich danach nicht mehr korrigieren. Eine Charge, die mit
+einer Vercel-Vorschauadresse gebrannt wurde, ist nach dem Domain-Umzug wertlos.
 
 Den Secret Key (`sb_secret_…`) niemals ins Frontend schreiben – er umgeht Row Level Security.
 Ältere Projekte nutzen statt der beiden neuen Schlüssel noch `anon` und `service_role`; der

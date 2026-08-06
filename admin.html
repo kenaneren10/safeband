@@ -77,6 +77,15 @@
           <p id="generate-error" class="form-error hidden" role="alert"></p>
 
           <div id="batch-result" class="hidden">
+            <p class="url-warning" role="alert">
+              <strong>⚠️ Vor dem Beschreiben die Adresse prüfen.</strong>
+              Die Chips werden schreibgeschützt – die aufgedruckte Adresse lässt sich danach
+              <strong>nicht mehr ändern</strong>. Aktuell würde
+              <code id="band-url-base">–</code> auf die Bänder geschrieben.
+              Steht dort eine Vorschau- oder <code>.vercel.app</code>-Adresse statt der endgültigen
+              Domain, funktioniert die ganze Charge nach dem Domain-Umzug nicht mehr.
+              In diesem Fall zuerst <code>BAND_URL_ORIGIN</code> in <code>js/config.js</code> setzen.
+            </p>
             <div class="batch-actions">
               <button type="button" id="download-csv" class="btn btn-secondary btn-sm">CSV herunterladen</button>
               <span id="nfc-support" class="nfc-hint"></span>
