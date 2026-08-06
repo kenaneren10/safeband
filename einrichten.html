@@ -44,8 +44,8 @@
           verknüpfen sie vor dem Versand mit deinem Band. Beim Auspacken ist es sofort einsatzbereit.
         </p>
         <p class="page-hero-note">
-          Die öffentlich sichtbaren Angaben kannst du bewusst einschränken. Kontaktdaten sind auf der
-          Notfallseite nie sichtbar.
+          Die öffentlich sichtbaren Angaben kannst du bewusst einschränken. Die Kontaktdaten bleiben
+          verborgen, solange du sie nicht ausdrücklich freigibst.
         </p>
       </div>
     </section>
@@ -89,8 +89,11 @@
 
           <hr class="form-divider">
 
-          <h2>Notfallkontakt (nicht öffentlich)</h2>
-          <p class="form-hint">Diese Daten werden <strong>nicht</strong> auf der Notfallseite angezeigt.</p>
+          <h2>Notfallkontakt</h2>
+          <p class="form-hint">
+            Standardmässig <strong>nicht</strong> auf der Notfallseite sichtbar. Weiter unten kannst
+            du die Nummer freigeben, damit Helfer direkt anrufen können.
+          </p>
 
           <div class="form-row">
             <label for="contact-name">Name des Notfallkontakts *</label>
@@ -126,6 +129,19 @@
               Ich willige ausdrücklich ein, dass der medizinische Hinweis als Gesundheitsangabe
               gespeichert und im Notfall öffentlich angezeigt wird.
               <small>Nur nötig, wenn du das Feld „Medizinischer Hinweis“ ausgefüllt hast.</small>
+            </label>
+          </div>
+
+          <div class="consent-row">
+            <input type="checkbox" id="consent-call">
+            <label for="consent-call">
+              Name und Telefonnummer des Notfallkontakts dürfen auf der Notfallseite angezeigt
+              werden, damit Helfer direkt anrufen können.
+              <small>
+                Ohne dieses Häkchen bleibt die Nummer verborgen und Helfer erreichen euch nur über
+                das Nachrichtenformular. Mit Häkchen sieht sie jede Person, die das Armband scannt.
+                Du kannst das jederzeit über deinen Verwaltungslink ändern.
+              </small>
             </label>
           </div>
 

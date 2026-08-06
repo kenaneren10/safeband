@@ -6,60 +6,93 @@
   <meta name="description" content="SafeBand Notfallseite – Diese Person braucht Hilfe.">
   <meta name="robots" content="noindex, nofollow">
   <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#c53030">
   <title>Notfall – SafeBand</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="emergency-page">
   <header class="emergency-header">
     <div class="container">
-      <span class="emergency-badge">🚨 Notfallseite</span>
+      <span class="emergency-badge">Notfall-Pass</span>
       <h1>Diese Person braucht Hilfe</h1>
-      <p>Bitte informieren Sie die Angehörigen oder Betreuungsperson über das Formular unten.</p>
     </div>
   </header>
 
   <main class="container emergency-main">
-    <div id="loading" class="status-panel">Profil wird geladen …</div>
+    <div id="loading" class="status-panel">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Angaben werden geladen …</p>
+    </div>
+
     <div id="not-found" class="status-panel hidden">
       <h2>Armband nicht gefunden</h2>
       <p id="not-found-detail">
-        Dieses Armband ist unbekannt, noch nicht verknüpft oder wurde vom Besitzer gesperrt.
+        Dieses Armband ist unbekannt, noch nicht verknüpft oder wurde gesperrt.
       </p>
-      <p><strong>Im Notfall wählen Sie bitte 144 (Schweiz) oder 112.</strong></p>
+      <a href="tel:144" class="call-btn call-btn--emergency">
+        <svg class="call-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/>
+        </svg>
+        <span class="call-btn__text">
+          <span class="call-btn__label">Notruf wählen</span>
+          <span class="call-btn__value">144</span>
+        </span>
+      </a>
     </div>
 
     <div id="profile-section" class="hidden">
-      <section class="info-card">
-        <h2>Informationen für Helfer</h2>
-        <dl class="info-list">
-          <div class="info-row">
-            <dt>Vorname</dt>
-            <dd id="info-name">–</dd>
-          </div>
-          <div class="info-row">
-            <dt>Kategorie</dt>
-            <dd id="info-category">–</dd>
-          </div>
-          <div class="info-row">
-            <dt>Hinweis</dt>
-            <dd id="info-note">–</dd>
-          </div>
-          <div class="info-row" id="info-medical-row">
-            <dt>Medizinischer Hinweis</dt>
-            <dd id="info-medical">–</dd>
-          </div>
-        </dl>
-        <p class="privacy-note">
-          🔒 Telefonnummern und Kontaktdaten sind aus Datenschutzgründen <strong>nicht öffentlich</strong> sichtbar.
-          Nutzen Sie das Formular, um die Notfallkontakte zu informieren.
-        </p>
+      <!-- Wer trägt das Band ------------------------------------------- -->
+      <section class="person-card">
+        <p class="person-label">Trägerin oder Träger dieses Armbands</p>
+        <p class="person-name" id="info-name">–</p>
+        <span class="person-tag" id="info-category">–</span>
       </section>
 
+      <!-- Sofort handeln ----------------------------------------------- -->
+      <div class="emergency-actions">
+        <a href="tel:144" class="call-btn call-btn--emergency">
+          <svg class="call-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/>
+          </svg>
+          <span class="call-btn__text">
+            <span class="call-btn__label">Notruf wählen</span>
+            <span class="call-btn__value">144</span>
+          </span>
+        </a>
+
+        <a href="#" class="call-btn call-btn--contact hidden" id="call-contact">
+          <svg class="call-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/>
+          </svg>
+          <span class="call-btn__text">
+            <span class="call-btn__label" id="call-contact-label">Notfallkontakt anrufen</span>
+            <span class="call-btn__value" id="call-contact-number">–</span>
+          </span>
+        </a>
+      </div>
+
+      <!-- Medizinisches zuerst, das entscheidet über die Erste Hilfe ---- -->
+      <section class="alert-card hidden" id="medical-card">
+        <h2>
+          <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2 3 6v6c0 5 3.8 9.4 9 10 5.2-.6 9-5 9-10V6z"/>
+            <path class="card-icon__mark" d="M11 7h2v4h4v2h-4v4h-2v-4H7v-2h4z"/>
+          </svg>
+          Medizinischer Hinweis
+        </h2>
+        <p id="info-medical"></p>
+      </section>
+
+      <section class="note-card hidden" id="note-card">
+        <h2>Hinweis der Angehörigen</h2>
+        <p id="info-note"></p>
+      </section>
+
+      <!-- Nachricht an die Angehörigen ---------------------------------- -->
       <section class="contact-card">
-        <h2>Angehörige informieren</h2>
-        <p class="contact-intro">
-          Füllen Sie das Formular aus. Die Nachricht wird an die hinterlegten Notfallkontakte
-          weitergeleitet – ohne deren Daten anzuzeigen.
+        <h2>Angehörige benachrichtigen</h2>
+        <p class="contact-intro" id="contact-intro">
+          Die Nachricht geht an die hinterlegten Notfallkontakte.
         </p>
         <form id="contact-form">
           <div class="form-row">
@@ -67,18 +100,18 @@
             <input type="text" id="helper-name" placeholder="z.B. Maria, Sicherheitsdienst" maxlength="50">
           </div>
           <div class="form-row">
-            <label for="helper-location">Standort / Beschreibung *</label>
-            <input type="text" id="helper-location" placeholder="z.B. Bahnhof Zürich, bei Kiosk" required maxlength="120">
+            <label for="helper-location">Wo befindet sich die Person? *</label>
+            <input type="text" id="helper-location" placeholder="z.B. Bahnhof Zürich, beim Kiosk" required maxlength="120">
           </div>
           <div class="form-row">
-            <label for="helper-message">Nachricht *</label>
+            <label for="helper-message">Was ist passiert? *</label>
             <textarea id="helper-message" rows="3" placeholder="Kurze Beschreibung der Situation …" required maxlength="400"></textarea>
           </div>
           <p id="contact-error" class="form-error hidden" role="alert"></p>
-          <button type="submit" class="btn btn-primary btn-full" id="contact-submit">Notfallkontakt benachrichtigen</button>
+          <button type="submit" class="btn btn-primary btn-full" id="contact-submit">Nachricht senden</button>
         </form>
-        <div id="contact-success" class="success-message hidden">
-          ✅ Die Nachricht wurde erfolgreich an die Notfallkontakte gesendet.
+        <div id="contact-success" class="success-message hidden" role="status">
+          Die Nachricht wurde an die Notfallkontakte gesendet.
           <span id="contact-success-detail"></span>
         </div>
       </section>

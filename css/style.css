@@ -926,7 +926,7 @@ a:hover {
 .emergency-header {
   background: linear-gradient(135deg, #c53030 0%, #9b2c2c 100%);
   color: white;
-  padding: 2rem 0;
+  padding: 1.5rem 0 1.75rem;
   text-align: center;
 }
 
@@ -941,76 +941,228 @@ a:hover {
 }
 
 .emergency-header h1 {
-  font-size: clamp(1.5rem, 4vw, 2rem);
-  margin-bottom: 0.5rem;
-}
-
-.emergency-header p {
-  opacity: 0.9;
+  font-size: clamp(1.35rem, 4.5vw, 1.9rem);
+  line-height: 1.25;
 }
 
 .emergency-main {
-  padding: 2rem 0 3rem;
+  padding: 1.5rem 0 3rem;
+  max-width: 720px;
   flex: 1;
 }
 
 .status-panel {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 2.5rem 1.5rem;
   background: var(--color-surface);
   border-radius: var(--radius);
   border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
-.info-card,
+.status-panel h2 {
+  font-size: 1.2rem;
+  color: var(--color-navy);
+  margin-bottom: 0.5rem;
+}
+
+.status-panel p {
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.status-panel .call-btn {
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto 1rem;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-navy);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Wer trägt das Band – bewusst das Erste auf der Seite. */
+.person-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.person-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.person-name {
+  font-size: clamp(1.9rem, 7vw, 2.6rem);
+  font-weight: 800;
+  color: var(--color-navy);
+  line-height: 1.15;
+  margin: 0.35rem 0 0.8rem;
+}
+
+.person-tag {
+  display: inline-block;
+  background: var(--color-bg-alt);
+  color: var(--color-navy);
+  border-radius: 999px;
+  padding: 0.3rem 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Anrufen ist die wichtigste Handlung – entsprechend gross die Fläche. */
+.emergency-actions {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.call-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 66px;
+  padding: 0.9rem 1.25rem;
+  border-radius: var(--radius);
+  color: white;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.call-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.call-btn:active {
+  transform: translateY(0);
+}
+
+.call-btn--emergency {
+  background: linear-gradient(135deg, #c53030 0%, #9b2c2c 100%);
+}
+
+.call-btn--contact {
+  background: linear-gradient(135deg, var(--color-navy-light) 0%, var(--color-navy) 100%);
+}
+
+.call-btn__icon {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  fill: currentColor;
+}
+
+.call-btn__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.call-btn__label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.call-btn__value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.alert-card,
+.note-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.35rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.alert-card {
+  background: var(--color-alert-bg);
+  border-left: 5px solid var(--color-alert);
+}
+
+.alert-card h2,
+.note-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-bottom: 0.5rem;
+}
+
+.alert-card h2 {
+  color: var(--color-alert);
+}
+
+.card-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  fill: currentColor;
+}
+
+.card-icon__mark {
+  fill: var(--color-alert-bg);
+}
+
+.alert-card p,
+.note-card p {
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+/* Ab Tablet passen die beiden Anruf-Flächen nebeneinander. */
+@media (min-width: 620px) {
+  .emergency-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .person-card,
+  .contact-card {
+    padding: 1.75rem;
+  }
+}
+
 .contact-card {
   background: var(--color-surface);
-  padding: 1.75rem;
+  padding: 1.5rem;
   border-radius: var(--radius);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
 }
 
-.info-card h2,
 .contact-card h2 {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-navy);
-  margin-bottom: 1rem;
-}
-
-.info-list {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.info-row {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 0.5rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.info-row dt {
-  font-weight: 600;
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-}
-
-.info-row dd {
-  font-weight: 500;
-}
-
-.privacy-note {
-  margin-top: 1.25rem;
-  padding: 1rem;
-  background: var(--color-bg-alt);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-  border-left: 4px solid var(--color-mint);
+  margin-bottom: 0.5rem;
 }
 
 .contact-intro {
@@ -1883,10 +2035,6 @@ a:hover {
   .nav-links {
     max-height: 70vh;
     overflow-y: auto;
-  }
-
-  .info-row {
-    grid-template-columns: 1fr;
   }
 
   .hero-actions {

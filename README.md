@@ -48,7 +48,8 @@ setzt er eine Meldung ab.
 Projekt anlegen, als Region **Frankfurt (eu-central-1)** oder **Zürich** wählen – bei
 Gesundheitsdaten sollten die Server in der EU/Schweiz stehen.
 
-Dann `supabase/migrations/0001_init.sql` im SQL-Editor ausführen.
+Dann die Dateien in `supabase/migrations/` im SQL-Editor ausführen, in der Reihenfolge ihrer
+Nummerierung: `0001_init.sql`, `0002_lock_down_writes.sql`, `0003_contact_call.sql`.
 
 Die Migration legt am Ende einen Demo-Datensatz an: Band `DEMO0001` mit dem Profil „Luca" und
 einem erfundenen Notfallkontakt. Damit lässt sich `/n/DEMO0001` sofort ausprobieren. Vor dem
@@ -141,8 +142,9 @@ wird in `consents` mit Zeitstempel und Textversion protokolliert.
 Weitere Schutzmassnahmen im Code:
 
 - Band-Codes sind zufällig (Crockford-Base32, 32^8 Möglichkeiten) und damit nicht durchzählbar.
-- Der Browser kommt nur über SECURITY-DEFINER-Funktionen an Daten; Kontaktdaten werden von der
-  Datenbank gar nicht erst ausgeliefert.
+- Der Browser kommt nur über SECURITY-DEFINER-Funktionen an Daten. Name und Telefonnummer des
+  Notfallkontakts liefert die Datenbank nur aus, wenn der Kunde sie ausdrücklich freigegeben hat,
+  sonst kommen beide Felder als NULL zurück. Die E-Mail-Adresse nie.
 - Wiederholte Fehlversuche werden pro IP gedrosselt (`rate_limits`).
 - Kunden können ihr Band über den Verwaltungslink jederzeit selbst sperren.
 

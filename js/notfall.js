@@ -1,9 +1,10 @@
 /**
  * SafeBand – Notfallseite
  *
- * Wird über /n/CODE aufgerufen (siehe Rewrite in netlify.toml / vercel.json)
- * und lädt nur die öffentlich freigegebenen Felder. Kontaktdaten werden
- * absichtlich nicht ausgeliefert – die Benachrichtigung läuft serverseitig.
+ * Wird über /n/CODE aufgerufen (siehe Rewrite in netlify.toml / vercel.json).
+ * Ausgeliefert wird nur, was der Kunde freigegeben hat: Name und Nummer des
+ * Notfallkontakts kommen ausschliesslich mit ausdrücklicher Freigabe mit,
+ * sonst gibt die Datenbank beide Felder gar nicht erst heraus.
  */
 
 const bandCode = new URLSearchParams(window.location.search).get("id");
@@ -49,21 +50,45 @@ async function loadProfile(code) {
   document.getElementById("info-name").textContent = profile.first_name;
   document.getElementById("info-category").textContent =
     CATEGORY_LABELS[profile.category] || profile.category;
-  document.getElementById("info-note").textContent =
-    profile.public_note || "Kein zusätzlicher Hinweis.";
 
-  const medicalRow = document.getElementById("info-medical-row");
-  if (profile.medical_note) {
-    document.getElementById("info-medical").textContent = profile.medical_note;
-    medicalRow.classList.remove("hidden");
-  } else {
-    medicalRow.classList.add("hidden");
-  }
+  showIfPresent("note-card", "info-note", profile.public_note);
+  showIfPresent("medical-card", "info-medical", profile.medical_note);
+  showContactCall(profile);
 
   contactForm.addEventListener("submit", (e) => {
     e.preventDefault();
     notifyContacts(code);
   });
+}
+
+/** Blendet eine Karte nur ein, wenn dazu überhaupt etwas hinterlegt ist. */
+function showIfPresent(cardId, textId, value) {
+  if (!value) return;
+  document.getElementById(textId).textContent = value;
+  document.getElementById(cardId).classList.remove("hidden");
+}
+
+function showContactCall(profile) {
+  const intro = document.getElementById("contact-intro");
+
+  if (!profile.contact_phone) {
+    intro.textContent =
+      "Die Telefonnummer der Angehörigen ist nicht öffentlich hinterlegt. " +
+      "Über dieses Formular erreichen Sie die Notfallkontakte trotzdem.";
+    return;
+  }
+
+  const button = document.getElementById("call-contact");
+  button.href = `tel:${profile.contact_phone.replace(/[^\d+]/g, "")}`;
+  button.classList.remove("hidden");
+
+  document.getElementById("call-contact-number").textContent = profile.contact_phone;
+  if (profile.contact_name) {
+    document.getElementById("call-contact-label").textContent = `${profile.contact_name} anrufen`;
+  }
+
+  intro.textContent =
+    "Falls niemand ans Telefon geht, hinterlassen Sie hier eine Nachricht.";
 }
 
 async function notifyContacts(code) {
@@ -84,7 +109,7 @@ async function notifyContacts(code) {
     contactError.classList.remove("hidden");
   } finally {
     contactSubmit.disabled = false;
-    contactSubmit.textContent = "Notfallkontakt benachrichtigen";
+    contactSubmit.textContent = "Nachricht senden";
   }
 }
 

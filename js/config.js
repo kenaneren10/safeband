@@ -17,7 +17,7 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__mgJCDbNYaXNwKt6EvneJA_p4jFH8XC
  * damit später nachweisbar ist, welchem Text der Kunde zugestimmt hat.
  * Bei inhaltlichen Änderungen an datenschutz.html hochzählen.
  */
-const PRIVACY_POLICY_VERSION = "2026-08-06";
+const PRIVACY_POLICY_VERSION = "2026-08-06.2";
 
 /**
  * Domain für die Kurz-URL auf dem NFC-Chip.

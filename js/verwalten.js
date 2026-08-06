@@ -49,6 +49,7 @@ async function load() {
   fill("contact-name", profile.contact_name);
   fill("contact-phone", profile.contact_phone);
   fill("contact-email", profile.contact_email);
+  document.getElementById("contact-call-public").checked = Boolean(profile.contact_call_public);
 
   document.getElementById("band-code").textContent =
     profile.band_code || "wird beim Versand verknüpft";
@@ -77,6 +78,7 @@ form.addEventListener("submit", async (e) => {
       contact_name: value("contact-name"),
       contact_phone: value("contact-phone"),
       contact_email: value("contact-email"),
+      contact_call_public: document.getElementById("contact-call-public").checked,
     });
     show("manage-success", "Änderungen gespeichert.");
   } catch (err) {

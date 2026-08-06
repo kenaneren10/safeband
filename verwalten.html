@@ -104,7 +104,7 @@
 
             <hr class="form-divider">
 
-            <h2>Notfallkontakt (nicht öffentlich)</h2>
+            <h2>Notfallkontakt</h2>
 
             <div class="form-row">
               <label for="contact-name">Name *</label>
@@ -119,6 +119,19 @@
             <div class="form-row">
               <label for="contact-email">E-Mail (optional)</label>
               <input type="email" id="contact-email" maxlength="80">
+            </div>
+
+            <div class="consent-row">
+              <input type="checkbox" id="contact-call-public">
+              <label for="contact-call-public">
+                Name und Telefonnummer auf der Notfallseite anzeigen, damit Helfer direkt
+                anrufen können.
+                <small>
+                  Ohne Häkchen bleibt beides verborgen und Helfer erreichen euch nur über das
+                  Nachrichtenformular. Mit Häkchen sieht die Nummer jede Person, die das Armband
+                  scannt.
+                </small>
+              </label>
             </div>
 
             <p id="manage-error" class="form-error hidden" role="alert"></p>

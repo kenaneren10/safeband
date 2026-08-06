@@ -31,6 +31,7 @@ if (setupForm) {
       contact_email: value("contact-email"),
       consent_privacy: document.getElementById("consent-privacy").checked,
       consent_health: document.getElementById("consent-health").checked,
+      consent_call: document.getElementById("consent-call").checked,
     };
 
     if (payload.medical_note && !payload.consent_health) {
