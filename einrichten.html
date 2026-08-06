@@ -157,18 +157,29 @@
             </ol>
           </div>
 
-          <h3>Dein Verwaltungslink</h3>
+          <h3>Dein persönlicher Verwaltungslink</h3>
           <p>
             Über diesen Link kannst du die Daten jederzeit ändern oder das Band sperren.
-            <strong>Bitte gut aufbewahren</strong> – wer ihn hat, kann das Profil bearbeiten.
+            <strong>Bitte gut aufbewahren</strong> – zum Beispiel als Lesezeichen im Browser.
           </p>
-          <div class="url-box">
+
+          <p class="url-warning" role="alert">
+            <strong>⚠️ Dieser Link gehört nicht auf das Armband.</strong>
+            Er ist dein privater Schlüssel: Wer ihn öffnet, sieht auch die Telefonnummer deines
+            Notfallkontakts und kann alle Angaben ändern oder löschen. Schreibe ihn deshalb
+            <strong>niemals auf den NFC-Chip</strong> und gib ihn nicht weiter. Um das Armband
+            selbst musst du dich nicht kümmern – wir speichern darauf eine eigene, unbedenkliche
+            Adresse der Form <code>/n/</code> plus achtstelligem Code.
+          </p>
+
+          <div class="url-box url-box--private">
+            <span class="url-box-label">Privat – nur für dich</span>
             <code id="result-manage-url"></code>
             <button type="button" id="copy-url-btn" class="btn btn-secondary btn-sm">Kopieren</button>
           </div>
           <a id="result-manage-link" href="#" class="btn btn-primary btn-full">Profil verwalten</a>
 
-          <p class="qr-hint">
+          <p class="result-note">
             Wir schicken dir denselben Link zusätzlich per E-Mail, sofern du eine angegeben hast.
           </p>
         </aside>

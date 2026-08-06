@@ -10,13 +10,19 @@ Unter `/admin.html` einen Vorrat an Codes erzeugen, die Chips mit der jeweiligen
 beschreiben und schreibschützen, dann ins Lager legen. Die Bänder sind zu diesem Zeitpunkt
 noch keinem Menschen zugeordnet.
 
+Auf einen Chip gehört ausschliesslich die Band-URL `/n/CODE` aus der Tabelle in `/admin.html` –
+sonst nichts. Der Verwaltungslink `/verwalten.html?t=…` ist etwas völlig anderes: privat,
+persönlich und mit vollem Lese- und Schreibzugriff auf das Profil. Landet er auf einem Band,
+kann ihn jede Person mit einem Handy scannen und die Kontaktdaten einsehen und ändern.
+
 **Bestellung**
 Auf `/bestellen.html` wählt der Kunde Ausführung und Menge und gibt seine Lieferadresse an. Die
 Seite ersetzt im Rahmen der Projektarbeit den Shop: Sie löst keine Zahlung aus, speichert die
 Adresse nicht und erzeugt die Bestellnummer im Browser. Danach landet der Käufer auf
 `/einrichten.html?bestellung=SB-10427`. Er trägt die Daten ein und bestätigt die
 Datenschutzerklärung. Im Hintergrund entsteht ein Profil plus ein Einwilligungsnachweis. Der
-Kunde bekommt einen Verwaltungslink.
+Kunde bekommt seinen persönlichen Verwaltungslink – der bleibt bei ihm und hat mit dem Band
+nichts zu tun.
 
 **Versand**
 Beim Verpacken unter `/admin.html` das Band ans Handy halten (oder den Code abtippen), die
@@ -105,6 +111,10 @@ mehr unterbringen wollt.
 
 Der Schreibschutz ist kein optionaler Feinschliff: ein offener Chip lässt sich von jedem
 Passanten mit einem Handy überschreiben.
+
+Vor dem Schreibschutz einmal gegenlesen, was tatsächlich auf dem Chip steht – die Adresse muss
+auf `/n/` plus achtstelligem Code enden. Ein falsch beschriebener Chip lässt sich nach dem
+Sperren nicht mehr korrigieren und ist damit Ausschuss.
 
 ## Datenschutz
 

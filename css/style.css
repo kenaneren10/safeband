@@ -1080,21 +1080,22 @@ a:hover {
   color: var(--color-navy);
 }
 
-.qr-section {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-border);
+/* Der Verwaltungslink darf nicht wie die Adresse fürs Band aussehen. */
+.url-box--private {
+  background: var(--color-alert-bg);
+  border: 1px solid #f5c2c2;
 }
 
-.qr-placeholder {
-  display: flex;
-  justify-content: center;
-  margin: 1rem 0;
-  min-height: 200px;
-  align-items: center;
+.url-box-label {
+  flex-basis: 100%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-alert);
 }
 
-.qr-hint {
+.result-note {
   font-size: 0.85rem;
   color: var(--color-text-muted);
 }
@@ -1592,6 +1593,25 @@ a:hover {
   border-radius: 4px;
 }
 
+.url-warning + .url-warning {
+  margin-top: 1rem;
+}
+
+.scan-hint {
+  text-align: left;
+}
+
+.scan-hint h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-bottom: 0.6rem;
+}
+
+.scan-hint p + p {
+  margin-top: 0.75rem;
+}
+
 .batch-actions {
   display: flex;
   gap: 1rem;
@@ -1660,6 +1680,11 @@ a:hover {
   .form-split,
   .form-split--zip {
     grid-template-columns: 1fr;
+  }
+
+  /* Sonst quetscht sich die lange URL neben den Kopieren-Button. */
+  .url-box code {
+    flex-basis: 100%;
   }
 }
 

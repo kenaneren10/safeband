@@ -79,7 +79,15 @@
           <div id="batch-result" class="hidden">
             <p class="url-warning" role="alert">
               <strong>⚠️ Vor dem Beschreiben die Adresse prüfen.</strong>
-              Die Chips werden schreibgeschützt – die aufgedruckte Adresse lässt sich danach
+              Auf einen Chip gehört <strong>ausschliesslich</strong> eine Adresse aus der Spalte
+              „URL für den Chip“ – also <code>/n/</code> plus achtstelligem Code. Ein persönlicher
+              Verwaltungslink (<code>/verwalten.html?t=…</code>) darf niemals auf ein Band, denn er
+              gibt jeder Person, die das Armband scannt, vollen Zugriff auf die Daten inklusive
+              Telefonnummer des Notfallkontakts.
+            </p>
+            <p class="url-warning" role="alert">
+              <strong>⚠️ Basis-Adresse kontrollieren.</strong>
+              Die Chips werden schreibgeschützt – die aufgespielte Adresse lässt sich danach
               <strong>nicht mehr ändern</strong>. Aktuell würde
               <code id="band-url-base">–</code> auf die Bänder geschrieben.
               Steht dort eine Vorschau- oder <code>.vercel.app</code>-Adresse statt der endgültigen
