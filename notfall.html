@@ -8,7 +8,9 @@
   <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#c53030">
   <title>Notfall – SafeBand</title>
-  <link rel="stylesheet" href="css/style.css">
+  <!-- Absolute Pfade: die Seite wird unter /n/CODE ausgeliefert, relative
+       Angaben würden dort auf /n/css/… zeigen und ins Leere laufen. -->
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="emergency-page">
   <header class="emergency-header">
@@ -120,17 +122,17 @@
 
   <footer class="emergency-footer">
     <div class="container">
-      <a href="index.html">Start</a> ·
-      <a href="datenschutz.html">Datenschutz</a> ·
-      <a href="index.html#kontakt">Kontakt</a>
+      <a href="/index.html">Start</a> ·
+      <a href="/datenschutz.html">Datenschutz</a> ·
+      <a href="/index.html#kontakt">Kontakt</a>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.js"
           integrity="sha384-OUpie84zd1LdwNlK9uJJQRwab0BLqo3eKYKFh7hSVL58FSk7wPp2l0kfUMIIoaQd"
           crossorigin="anonymous"></script>
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/notfall.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/notfall.js"></script>
 </body>
 </html>
