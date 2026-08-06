@@ -1040,11 +1040,9 @@ a:hover {
 
 /* Setup page */
 
+/* Formular und Ergebnis lösen einander ab, stehen also nie nebeneinander. */
 .setup-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  align-items: start;
+  width: min(100% - 2.5rem, 720px);
 }
 
 .setup-form,
@@ -1194,13 +1192,309 @@ a:hover {
   border-radius: 10px;
 }
 
+/* ─── Formular-Bausteine ─── */
+
+.container.narrow {
+  width: min(100% - 2.5rem, 720px);
+}
+
+.page-hero-note {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin-top: 0.5rem;
+}
+
+.section-intro {
+  color: var(--color-text-muted);
+  max-width: 62ch;
+  margin-bottom: 1.5rem;
+}
+
+.form-error {
+  background: var(--color-alert-bg);
+  border-left: 4px solid var(--color-alert);
+  color: var(--color-alert);
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.consent-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.consent-row input[type="checkbox"] {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.2rem;
+  accent-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.consent-row small {
+  display: block;
+  color: var(--color-text-muted);
+  margin-top: 0.2rem;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.result-steps ol {
+  margin: 0 0 1.5rem 1.1rem;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.result-steps li {
+  margin-bottom: 0.35rem;
+}
+
+/* ─── Profil verwalten ─── */
+
+.band-status {
+  display: flex;
+  gap: 2.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.band-status-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-ok {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.badge-off {
+  background: var(--color-alert-bg);
+  color: var(--color-alert);
+}
+
+.danger-zone {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-alert);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.danger-zone h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.danger-zone p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+/* ─── Verwaltung (intern) ─── */
+
+/* Eigene Kopfzeile statt .nav-links: die Verwaltung wird am Handy bedient und
+   darf nicht hinter einem Burger-Menü verschwinden. */
+.admin-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-user {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 40vw;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--color-navy);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.inline-form .form-row {
+  margin-bottom: 0;
+}
+
+.assign-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1.25rem;
+  align-items: end;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.assign-grid .form-row {
+  margin-bottom: 0;
+}
+
+.scan-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.scan-row input {
+  flex: 1;
+  text-transform: uppercase;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0.08em;
+}
+
+.batch-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1.5rem 0 1rem;
+}
+
+.nfc-hint {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  font-size: 0.9rem;
+}
+
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-table th {
+  background: var(--color-bg-alt);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.admin-table .url-cell {
+  color: var(--color-text-muted);
+  word-break: break-all;
+}
+
+.write-status {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.write-status.ok {
+  color: var(--color-success);
+}
+
+.write-status.warn {
+  color: #b7791f;
+}
+
+.write-status.error {
+  color: var(--color-alert);
+}
+
 /* ─── Responsive ─── */
+
+@media (max-width: 720px) {
+  .assign-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .band-status {
+    gap: 1.5rem;
+  }
+
+  .admin-table thead th:nth-child(2),
+  .admin-table .url-cell {
+    display: none;
+  }
+}
 
 @media (max-width: 960px) {
   .hero-grid,
   .contact-layout,
   .privacy-box,
-  .setup-layout,
   .audience-layout,
   .audience-layout--reverse {
     grid-template-columns: 1fr;

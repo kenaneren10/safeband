@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="SafeBand Notfallseite – Diese Person braucht Hilfe.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
   <title>Notfall – SafeBand</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -20,8 +22,10 @@
     <div id="loading" class="status-panel">Profil wird geladen …</div>
     <div id="not-found" class="status-panel hidden">
       <h2>Armband nicht gefunden</h2>
-      <p>Dieses NFC-Armband ist ungültig oder wurde noch nicht eingerichtet.</p>
-      <a href="einrichten.html" class="btn btn-primary">Armband einrichten</a>
+      <p id="not-found-detail">
+        Dieses Armband ist unbekannt, noch nicht verknüpft oder wurde vom Besitzer gesperrt.
+      </p>
+      <p><strong>Im Notfall wählen Sie bitte 144 (Schweiz) oder 112.</strong></p>
     </div>
 
     <div id="profile-section" class="hidden">
@@ -70,7 +74,8 @@
             <label for="helper-message">Nachricht *</label>
             <textarea id="helper-message" rows="3" placeholder="Kurze Beschreibung der Situation …" required maxlength="400"></textarea>
           </div>
-          <button type="submit" class="btn btn-primary btn-full">Notfallkontakt benachrichtigen</button>
+          <p id="contact-error" class="form-error hidden" role="alert"></p>
+          <button type="submit" class="btn btn-primary btn-full" id="contact-submit">Notfallkontakt benachrichtigen</button>
         </form>
         <div id="contact-success" class="success-message hidden">
           ✅ Die Nachricht wurde erfolgreich an die Notfallkontakte gesendet.
@@ -83,14 +88,16 @@
   <footer class="emergency-footer">
     <div class="container">
       <a href="index.html">Start</a> ·
-      <a href="notfall.html?id=DEMO01">Demo</a> ·
-      <a href="einrichten.html">Einrichten</a> ·
       <a href="datenschutz.html">Datenschutz</a> ·
       <a href="index.html#kontakt">Kontakt</a>
     </div>
   </footer>
 
-  <script src="js/storage.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.js"
+          integrity="sha384-OUpie84zd1LdwNlK9uJJQRwab0BLqo3eKYKFh7hSVL58FSk7wPp2l0kfUMIIoaQd"
+          crossorigin="anonymous"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/notfall.js"></script>
 </body>
 </html>

@@ -1,43 +1,59 @@
 /**
- * SafeBand – Armband einrichten
+ * SafeBand – Bestellformular nach dem Kauf
+ *
+ * Legt das Notfallprofil an. Das physische Band wird erst beim Verpacken
+ * zugeordnet, deshalb gibt es hier keine Armband-ID einzugeben.
  */
 
 const setupForm = document.getElementById("setup-form");
 const setupResult = document.getElementById("setup-result");
-const resultUrl = document.getElementById("result-url");
-const resultLink = document.getElementById("result-link");
+const setupError = document.getElementById("setup-error");
+const setupSubmit = document.getElementById("setup-submit");
+const manageUrlEl = document.getElementById("result-manage-url");
+const manageLinkEl = document.getElementById("result-manage-link");
 const copyBtn = document.getElementById("copy-url-btn");
-const qrContainer = document.getElementById("qr-code");
 
 if (setupForm) {
-  setupForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+  prefillOrderRef();
 
-    const profile = {
-      id: document.getElementById("band-id").value.trim(),
-      firstName: document.getElementById("first-name").value.trim(),
-      category: document.getElementById("category").value,
-      publicNote: document.getElementById("public-note").value.trim(),
-      medicalNote: document.getElementById("medical-note").value.trim(),
-      contactName: document.getElementById("contact-name").value.trim(),
-      contactPhone: document.getElementById("contact-phone").value.trim(),
-      contactEmail: document.getElementById("contact-email").value.trim(),
-      createdAt: new Date().toISOString().split("T")[0],
+  setupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    hideError();
+
+    const payload = {
+      order_ref: value("order-ref"),
+      first_name: value("first-name"),
+      category: value("category"),
+      public_note: value("public-note"),
+      medical_note: value("medical-note"),
+      contact_name: value("contact-name"),
+      contact_phone: value("contact-phone"),
+      contact_email: value("contact-email"),
+      consent_privacy: document.getElementById("consent-privacy").checked,
+      consent_health: document.getElementById("consent-health").checked,
     };
 
-    if (getProfile(profile.id) && profile.id.toUpperCase() !== "DEMO01") {
-      const overwrite = confirm(
-        `Ein Profil mit der ID "${profile.id.toUpperCase()}" existiert bereits. Überschreiben?`
+    if (payload.medical_note && !payload.consent_health) {
+      showError(
+        "Für den medizinischen Hinweis brauchen wir deine ausdrückliche Einwilligung. " +
+          "Bitte setze das Häkchen oder lösche das Feld."
       );
-      if (!overwrite) return;
+      return;
     }
 
-    saveProfile(profile);
-    showResult(profile.id);
+    setLoading(true);
+    try {
+      const result = await createProfile(payload);
+      showResult(result.manage_token);
+    } catch (err) {
+      showError(err.message || "Speichern fehlgeschlagen. Bitte später erneut versuchen.");
+    } finally {
+      setLoading(false);
+    }
   });
 
   copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(resultUrl.textContent).then(() => {
+    navigator.clipboard.writeText(manageUrlEl.textContent).then(() => {
       copyBtn.textContent = "Kopiert!";
       setTimeout(() => {
         copyBtn.textContent = "Kopieren";
@@ -46,16 +62,37 @@ if (setupForm) {
   });
 }
 
-function showResult(bandId) {
-  const url = getNotfallUrl(bandId);
-  resultUrl.textContent = url;
-  resultLink.href = url;
-  setupResult.classList.remove("hidden");
-  setupResult.scrollIntoView({ behavior: "smooth", block: "start" });
-  renderQrCode(url);
+/** Der Shop hängt die Bestellnummer nach der Zahlung an die Weiterleitung an. */
+function prefillOrderRef() {
+  const ref = new URLSearchParams(window.location.search).get("bestellung");
+  if (ref) document.getElementById("order-ref").value = ref;
 }
 
-function renderQrCode(url) {
-  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
-  qrContainer.innerHTML = `<img src="${qrApiUrl}" alt="QR-Code für ${url}" width="200" height="200">`;
+function value(id) {
+  return document.getElementById(id).value.trim();
+}
+
+function setLoading(loading) {
+  setupSubmit.disabled = loading;
+  setupSubmit.textContent = loading ? "Wird übermittelt …" : "Daten übermitteln";
+}
+
+function showError(message) {
+  setupError.textContent = message;
+  setupError.classList.remove("hidden");
+  setupError.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function hideError() {
+  setupError.classList.add("hidden");
+}
+
+function showResult(manageToken) {
+  const url = manageUrl(manageToken);
+  manageUrlEl.textContent = url;
+  manageLinkEl.href = url;
+
+  setupForm.classList.add("hidden");
+  setupResult.classList.remove("hidden");
+  setupResult.scrollIntoView({ behavior: "smooth", block: "start" });
 }

@@ -21,7 +21,7 @@
       </button>
       <ul class="nav-links">
         <li><a href="index.html">Start</a></li>
-        <li><a href="notfall.html?id=DEMO01">Demo</a></li>
+        <li><a href="/n/DEMO0001">Demo</a></li>
         <li><a href="einrichten.html">Einrichten</a></li>
       </ul>
     </nav>
@@ -37,44 +37,100 @@
 
     <section class="section">
       <div class="container legal-content">
+        <p class="form-hint">Fassung vom 6. August 2026</p>
+
         <article>
-          <h2>Grundsatz der Anonymisierung</h2>
+          <h2>Grundsatz der Datensparsamkeit</h2>
           <p>
-            SafeBand ist so konzipiert, dass sensible persönliche Daten <strong>nicht öffentlich sichtbar</strong> sind.
-            Auf der Notfallseite werden nur die Informationen angezeigt, die für Helfer im Ernstfall notwendig sind
-            (z.B. Vorname, Kategorie, medizinische Hinweise).
+            SafeBand ist so gebaut, dass sensible persönliche Daten <strong>nicht öffentlich sichtbar</strong> sind.
+            Auf der Notfallseite erscheinen nur die Angaben, die Helfer im Ernstfall wirklich brauchen:
+            Vorname, Kategorie, Hinweis für Helfer und – sofern eingewilligt – ein medizinischer Hinweis.
           </p>
           <p>
-            Telefonnummern, E-Mail-Adressen und vollständige Namen der Notfallkontakte sind auf der öffentlichen
-            Notfallseite <strong>nicht einsehbar</strong>.
+            Name, Telefonnummer und E-Mail-Adresse des Notfallkontakts sind auf der Notfallseite
+            <strong>nicht einsehbar</strong>. Sie werden vom Server gar nicht erst an den Browser des
+            Helfers ausgeliefert.
           </p>
         </article>
 
         <article>
-          <h2>Kontaktfunktion</h2>
-          <p>
-            Die anonymisierte Kontaktfunktion ermöglicht es Helfern, Notfallkontakte zu benachrichtigen,
-            ohne deren Kontaktdaten einsehen zu müssen. Im Prototyp werden Nachrichten lokal gespeichert
-            und simuliert – in einer produktiven Version würde die Weiterleitung über einen sicheren Server erfolgen.
-          </p>
-        </article>
-
-        <article>
-          <h2>Datensparsamkeit</h2>
-          <p>Es werden nur folgende Daten erhoben:</p>
+          <h2>Welche Daten wir verarbeiten</h2>
           <ul class="tip-list">
-            <li>Öffentlich: Vorname, Kategorie, Hinweise für Helfer, optionale medizinische Angaben</li>
-            <li>Geschützt: Name, Telefon und E-Mail des Notfallkontakts</li>
-            <li>Bei Kontaktaufnahme: Standort, Nachricht und optional Name des Helfers</li>
+            <li>Öffentlich auf der Notfallseite: Vorname, Kategorie, Hinweis für Helfer, optionaler medizinischer Hinweis</li>
+            <li>Nur intern: Name, Telefon und E-Mail des Notfallkontakts sowie die Bestellnummer</li>
+            <li>Bei einer Helfer-Meldung: Standortbeschreibung, Nachricht und optional der Name des Helfers</li>
+            <li>Zum Nachweis der Einwilligung: Zeitpunkt, Fassung dieser Erklärung und Browserkennung</li>
+            <li>Zur Missbrauchsabwehr: ein nicht rückrechenbarer Hashwert der IP-Adresse</li>
           </ul>
         </article>
 
         <article>
-          <h2>Prototyp-Hinweis</h2>
+          <h2>Medizinische Angaben</h2>
           <p>
-            Diese Webseite ist ein funktionsfähiger Prototyp im Rahmen einer Schulprojektarbeit.
-            Daten werden im Browser (localStorage) gespeichert und dienen Demonstrationszwecken.
-            Für den produktiven Einsatz wäre ein sicheres Backend mit verschlüsselter Datenspeicherung erforderlich.
+            Ein medizinischer Hinweis ist ein Gesundheitsdatum im Sinne von Art. 9 DSGVO bzw. Art. 5 revDSG.
+            Wir verarbeiten ihn ausschliesslich auf Grundlage Ihrer <strong>ausdrücklichen Einwilligung</strong>,
+            die Sie im Bestellformular gesondert erteilen (Art. 9 Abs. 2 lit. a DSGVO). Das Feld ist freiwillig –
+            das Armband funktioniert auch ohne.
+          </p>
+          <p>
+            Sie können die Einwilligung jederzeit widerrufen, indem Sie das Feld über Ihren Verwaltungslink
+            leeren. Die Rechtmässigkeit der bis dahin erfolgten Verarbeitung bleibt davon unberührt.
+          </p>
+        </article>
+
+        <article>
+          <h2>Rechtsgrundlagen und Zweck</h2>
+          <p>
+            Die Daten dienen allein dem Betrieb des Armbands: Sie sollen es Helfern ermöglichen, in einer
+            Notlage richtig zu reagieren und Angehörige zu erreichen. Rechtsgrundlage ist Ihre Einwilligung
+            (Art. 6 Abs. 1 lit. a DSGVO) sowie die Erfüllung des Kaufvertrags (lit. b). Eine Weitergabe zu
+            Werbezwecken oder eine Auswertung Ihrer Daten findet nicht statt.
+          </p>
+        </article>
+
+        <article>
+          <h2>Kontaktfunktion für Helfer</h2>
+          <p>
+            Helfer können die Notfallkontakte über ein Formular benachrichtigen, ohne deren Kontaktdaten zu
+            sehen. Die Zustellung erfolgt serverseitig; dem Helfer wird zu keinem Zeitpunkt angezeigt, an wen
+            die Nachricht geht.
+          </p>
+        </article>
+
+        <article>
+          <h2>Speicherung und Auftragsverarbeitung</h2>
+          <p>
+            Die Daten liegen in einer Datenbank bei Supabase, betrieben in einem Rechenzentrum innerhalb der
+            EU. Supabase ist als Auftragsverarbeiter vertraglich gebunden und verarbeitet die Daten
+            ausschliesslich nach unserer Weisung. Übertragung und Speicherung erfolgen verschlüsselt.
+          </p>
+          <p>
+            Wir speichern Ihre Angaben, solange das Armband genutzt wird. Nach Sperrung oder auf Ihre
+            Aufforderung hin löschen wir das Profil innerhalb von 30 Tagen. Einwilligungsnachweise bewahren
+            wir aus Rechenschaftsgründen bis zu drei Jahre nach Löschung auf.
+          </p>
+        </article>
+
+        <article>
+          <h2>Ihre Rechte</h2>
+          <p>
+            Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
+            Datenübertragbarkeit und Widerspruch sowie das Recht, sich bei einer Aufsichtsbehörde zu
+            beschweren (in der Schweiz: EDÖB).
+          </p>
+          <p>
+            Auskunft und Berichtigung erledigen Sie am schnellsten selbst: Über den Verwaltungslink aus Ihrer
+            Bestätigungs-E-Mail sehen und ändern Sie alle gespeicherten Angaben und können das Armband
+            jederzeit sperren.
+          </p>
+        </article>
+
+        <article>
+          <h2>Daten von Kindern und betreuten Personen</h2>
+          <p>
+            Wird das Armband für ein Kind oder eine betreute Person eingerichtet, bestätigen Sie bei der
+            Bestellung, dass Sie sorge- oder vertretungsberechtigt sind. Bitte geben Sie nur Angaben an, die
+            im Notfall tatsächlich helfen – der Vorname genügt, ein vollständiger Name ist nicht nötig.
           </p>
         </article>
 
@@ -83,6 +139,11 @@
           <p>
             Projektteam SafeBand · TEKO<br>
             Kontakt: über das Projektteam in der Präsentation
+          </p>
+          <p class="form-hint">
+            Hinweis: SafeBand entsteht im Rahmen einer Schulprojektarbeit. Vor einem echten Verkauf sind
+            hier die vollständigen Angaben des Verantwortlichen sowie eine Kontaktadresse für
+            Betroffenenanfragen einzutragen.
           </p>
         </article>
       </div>
@@ -99,7 +160,7 @@
       </div>
       <nav class="footer-nav" aria-label="Footer Navigation">
         <a href="index.html">Start</a>
-        <a href="notfall.html?id=DEMO01">Demo</a>
+        <a href="/n/DEMO0001">Demo</a>
         <a href="einrichten.html">Einrichten</a>
         <a href="datenschutz.html">Datenschutz</a>
         <a href="index.html#kontakt">Kontakt</a>

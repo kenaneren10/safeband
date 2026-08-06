@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Profil verwalten – SafeBand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav container">
+      <a href="index.html" class="logo-block">
+        <img src="assets/Safeband_logo.png" alt="SafeBand" class="site-logo" width="132" height="40">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Start</a></li>
+        <li><a href="datenschutz.html">Datenschutz</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container narrow">
+        <h1>Profil verwalten</h1>
+        <p>Änderungen sind sofort aktiv – das Armband selbst muss nicht neu eingerichtet werden.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container narrow">
+        <div id="loading" class="status-panel">Profil wird geladen …</div>
+
+        <div id="invalid" class="status-panel hidden">
+          <h2 id="invalid-title">Link ungültig</h2>
+          <p id="invalid-detail">
+            Dieser Verwaltungslink ist unbekannt. Bitte prüfe die Adresse aus deiner
+            Bestätigungs-E-Mail.
+          </p>
+        </div>
+
+        <div id="manage-app" class="hidden">
+          <div class="band-status">
+            <div>
+              <span class="band-status-label">Armband</span>
+              <code id="band-code">–</code>
+            </div>
+            <div>
+              <span class="band-status-label">Status</span>
+              <span id="band-active" class="badge">–</span>
+            </div>
+          </div>
+
+          <form id="manage-form" class="setup-form">
+            <h2>Öffentlich sichtbar</h2>
+
+            <div class="form-row">
+              <label for="first-name">Vorname *</label>
+              <input type="text" id="first-name" required maxlength="30">
+            </div>
+
+            <div class="form-row">
+              <label for="category">Kategorie *</label>
+              <select id="category" required>
+                <option value="kind">Kind</option>
+                <option value="senior">Senior / ältere Person</option>
+                <option value="pflege">Pflege / Betreuung</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="public-note">Hinweis für Helfer</label>
+              <textarea id="public-note" rows="2" maxlength="200"></textarea>
+            </div>
+
+            <div class="form-row">
+              <label for="medical-note">Medizinischer Hinweis</label>
+              <textarea id="medical-note" rows="2" maxlength="150"></textarea>
+              <small>Feld leeren, um die Angabe zu löschen.</small>
+            </div>
+
+            <hr class="form-divider">
+
+            <h2>Notfallkontakt (nicht öffentlich)</h2>
+
+            <div class="form-row">
+              <label for="contact-name">Name *</label>
+              <input type="text" id="contact-name" required maxlength="60">
+            </div>
+
+            <div class="form-row">
+              <label for="contact-phone">Telefonnummer *</label>
+              <input type="tel" id="contact-phone" required maxlength="20">
+            </div>
+
+            <div class="form-row">
+              <label for="contact-email">E-Mail (optional)</label>
+              <input type="email" id="contact-email" maxlength="80">
+            </div>
+
+            <p id="manage-error" class="form-error hidden" role="alert"></p>
+            <p id="manage-success" class="success-message hidden" role="status"></p>
+
+            <button type="submit" class="btn btn-primary" id="manage-submit">Änderungen speichern</button>
+          </form>
+
+          <div class="danger-zone">
+            <h2>Armband sperren</h2>
+            <p>
+              Bei Verlust oder Diebstahl. Die Notfallseite zeigt danach keine Daten mehr an.
+              Du kannst das Band jederzeit wieder freigeben.
+            </p>
+            <button type="button" id="toggle-active" class="btn btn-secondary">Armband sperren</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <p>&copy; 2026 SafeBand</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.js"
+          integrity="sha384-OUpie84zd1LdwNlK9uJJQRwab0BLqo3eKYKFh7hSVL58FSk7wPp2l0kfUMIIoaQd"
+          crossorigin="anonymous"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/verwalten.js"></script>
+</body>
+</html>

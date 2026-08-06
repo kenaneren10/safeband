@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="SafeBand Armband einrichten – Notfallprofil erstellen.">
+  <meta name="robots" content="noindex, nofollow">
   <title>Armband einrichten – SafeBand</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +22,7 @@
       </button>
       <ul class="nav-links">
         <li><a href="index.html">Start</a></li>
-        <li><a href="notfall.html?id=DEMO01">Demo</a></li>
+        <li><a href="/n/DEMO0001">Demo</a></li>
         <li><a href="einrichten.html" class="active">Einrichten</a></li>
       </ul>
     </nav>
@@ -29,11 +30,15 @@
 
   <main>
     <section class="page-hero">
-      <div class="container">
+      <div class="container narrow">
         <h1>Armband einrichten</h1>
         <p>
-          Erstelle ein Notfallprofil für ein SafeBand-Armband. Die öffentlich sichtbaren Informationen
-          kannst du bewusst einschränken – Kontaktdaten bleiben geschützt.
+          Vielen Dank für deine Bestellung. Hinterlege hier die Daten für dein Armband – wir
+          verknüpfen sie vor dem Versand mit deinem Band. Beim Auspacken ist es sofort einsatzbereit.
+        </p>
+        <p class="page-hero-note">
+          Die öffentlich sichtbaren Angaben kannst du bewusst einschränken. Kontaktdaten sind auf der
+          Notfallseite nie sichtbar.
         </p>
       </div>
     </section>
@@ -44,9 +49,9 @@
           <h2>Profil-Daten</h2>
 
           <div class="form-row">
-            <label for="band-id">Armband-ID *</label>
-            <input type="text" id="band-id" placeholder="z.B. SB-2026-001" required maxlength="20" pattern="[A-Za-z0-9\-]+">
-            <small>Nur Buchstaben, Zahlen und Bindestriche. Wird Teil der QR-Code-URL.</small>
+            <label for="order-ref">Bestellnummer *</label>
+            <input type="text" id="order-ref" placeholder="z.B. SB-10427" required maxlength="40">
+            <small>Steht in deiner Bestellbestätigung. Damit ordnen wir dir das richtige Band zu.</small>
           </div>
 
           <div class="form-row">
@@ -95,24 +100,70 @@
             <input type="email" id="contact-email" placeholder="kontakt@beispiel.ch" maxlength="80">
           </div>
 
-          <button type="submit" class="btn btn-primary">Profil speichern</button>
+          <hr class="form-divider">
+
+          <h2>Einwilligung</h2>
+
+          <div class="consent-row">
+            <input type="checkbox" id="consent-privacy" required>
+            <label for="consent-privacy">
+              Ich habe die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>
+              gelesen und willige in die Verarbeitung der hier angegebenen Daten zum Betrieb des
+              SafeBand-Armbands ein. *
+            </label>
+          </div>
+
+          <div class="consent-row">
+            <input type="checkbox" id="consent-health">
+            <label for="consent-health">
+              Ich willige ausdrücklich ein, dass der medizinische Hinweis als Gesundheitsangabe
+              gespeichert und im Notfall öffentlich angezeigt wird.
+              <small>Nur nötig, wenn du das Feld „Medizinischer Hinweis“ ausgefüllt hast.</small>
+            </label>
+          </div>
+
+          <div class="consent-row">
+            <input type="checkbox" id="consent-guardian" required>
+            <label for="consent-guardian">
+              Ich gebe die Daten als betroffene Person selbst an oder bin sorge- bzw.
+              vertretungsberechtigt für die Person, die das Armband trägt. *
+            </label>
+          </div>
+
+          <p id="setup-error" class="form-error hidden" role="alert"></p>
+
+          <button type="submit" class="btn btn-primary" id="setup-submit">Daten übermitteln</button>
         </form>
 
         <aside id="setup-result" class="setup-result hidden">
-          <h2>✅ Profil gespeichert</h2>
-          <p>Dieser Link wird auf dem QR-Code des Armbands hinterlegt:</p>
+          <h2>✅ Daten übermittelt</h2>
+          <p>
+            Wir verknüpfen dein Armband vor dem Versand mit diesen Angaben. Sobald das Paket bei dir
+            ankommt, ist das Band aktiv – du musst nichts weiter tun.
+          </p>
+
+          <div class="result-steps">
+            <ol>
+              <li><strong>Erledigt:</strong> Profil angelegt</li>
+              <li>Wir verknüpfen dein Band und versenden es</li>
+              <li>Auspacken, mit dem Handy antippen, fertig</li>
+            </ol>
+          </div>
+
+          <h3>Dein Verwaltungslink</h3>
+          <p>
+            Über diesen Link kannst du die Daten jederzeit ändern oder das Band sperren.
+            <strong>Bitte gut aufbewahren</strong> – wer ihn hat, kann das Profil bearbeiten.
+          </p>
           <div class="url-box">
-            <code id="result-url"></code>
+            <code id="result-manage-url"></code>
             <button type="button" id="copy-url-btn" class="btn btn-secondary btn-sm">Kopieren</button>
           </div>
-          <a id="result-link" href="#" class="btn btn-primary btn-full" target="_blank">Notfallseite testen</a>
+          <a id="result-manage-link" href="#" class="btn btn-primary btn-full">Profil verwalten</a>
 
-          <div class="qr-section">
-            <h3>QR-Code Vorschau</h3>
-            <p>Scanne diesen Code mit dem Smartphone zum Testen:</p>
-            <div id="qr-code" class="qr-placeholder"></div>
-            <p class="qr-hint">Im Prototyp: QR-Code auf dem physischen Armband anbringen (Online-Druck).</p>
-          </div>
+          <p class="qr-hint">
+            Wir schicken dir denselben Link zusätzlich per E-Mail, sofern du eine angegeben hast.
+          </p>
         </aside>
       </div>
     </section>
@@ -128,7 +179,7 @@
       </div>
       <nav class="footer-nav" aria-label="Footer Navigation">
         <a href="index.html">Start</a>
-        <a href="notfall.html?id=DEMO01">Demo</a>
+        <a href="/n/DEMO0001">Demo</a>
         <a href="einrichten.html">Einrichten</a>
         <a href="datenschutz.html">Datenschutz</a>
         <a href="index.html#kontakt">Kontakt</a>
@@ -139,7 +190,11 @@
     </div>
   </footer>
 
-  <script src="js/storage.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.js"
+          integrity="sha384-OUpie84zd1LdwNlK9uJJQRwab0BLqo3eKYKFh7hSVL58FSk7wPp2l0kfUMIIoaQd"
+          crossorigin="anonymous"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/main.js"></script>
   <script src="js/einrichten.js"></script>
 </body>

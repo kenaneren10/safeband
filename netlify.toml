@@ -1,0 +1,38 @@
+[build]
+  publish = "."
+
+# Kurz-URL für den NFC-Chip: /n/K7X2M9QP -> notfall.html?id=K7X2M9QP
+# Status 200 statt 301, damit die kurze Adresse in der Adresszeile stehen bleibt.
+[[redirects]]
+  from = "/n/*"
+  to = "/notfall.html?id=:splat"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Seiten mit personenbezogenen Daten gehören nicht in den Suchindex und sollen
+# den Band-Code bzw. Verwaltungs-Token nicht als Referer weitergeben.
+[[headers]]
+  for = "/n/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/verwalten.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"

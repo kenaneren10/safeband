@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Verwaltung – SafeBand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav container">
+      <a href="index.html" class="logo-block">
+        <img src="assets/Safeband_logo.png" alt="SafeBand" class="site-logo" width="132" height="40">
+      </a>
+      <div class="admin-nav">
+        <span id="admin-user" class="admin-user hidden"></span>
+        <button type="button" id="logout-btn" class="btn btn-secondary btn-sm hidden">Abmelden</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Login ---------------------------------------------------------- -->
+    <section class="section" id="login-section">
+      <div class="container narrow">
+        <h1>Verwaltung</h1>
+        <p>Interner Bereich für Produktion und Versand.</p>
+        <form id="login-form" class="setup-form">
+          <div class="form-row">
+            <label for="login-email">E-Mail</label>
+            <input type="email" id="login-email" required autocomplete="username">
+          </div>
+          <div class="form-row">
+            <label for="login-password">Passwort</label>
+            <input type="password" id="login-password" required autocomplete="current-password">
+          </div>
+          <p id="login-error" class="form-error hidden" role="alert"></p>
+          <button type="submit" class="btn btn-primary">Anmelden</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Angemeldet ----------------------------------------------------- -->
+    <div id="admin-app" class="hidden">
+      <section class="page-hero">
+        <div class="container">
+          <h1>Verwaltung</h1>
+          <div id="stats" class="stat-grid"></div>
+        </div>
+      </section>
+
+      <!-- Schritt 1: Produktion --------------------------------------- -->
+      <section class="section">
+        <div class="container">
+          <h2>1. Bänder produzieren</h2>
+          <p class="section-intro">
+            Erzeugt neue Codes auf Vorrat. Danach die Chips beschreiben und schreibschützen –
+            erst dann ins Lager legen.
+          </p>
+
+          <form id="generate-form" class="inline-form">
+            <div class="form-row">
+              <label for="gen-count">Anzahl</label>
+              <input type="number" id="gen-count" value="20" min="1" max="500" required>
+            </div>
+            <div class="form-row">
+              <label for="gen-batch">Charge (optional)</label>
+              <input type="text" id="gen-batch" placeholder="z.B. 2026-08-A" maxlength="40">
+            </div>
+            <button type="submit" class="btn btn-primary" id="generate-btn">Codes erzeugen</button>
+          </form>
+
+          <p id="generate-error" class="form-error hidden" role="alert"></p>
+
+          <div id="batch-result" class="hidden">
+            <div class="batch-actions">
+              <button type="button" id="download-csv" class="btn btn-secondary btn-sm">CSV herunterladen</button>
+              <span id="nfc-support" class="nfc-hint"></span>
+            </div>
+            <table class="admin-table">
+              <thead>
+                <tr><th>Code</th><th>URL für den Chip</th><th>Beschreiben</th></tr>
+              </thead>
+              <tbody id="batch-rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Schritt 2: Versand ------------------------------------------ -->
+      <section class="section section-alt">
+        <div class="container">
+          <h2>2. Band einer Bestellung zuordnen</h2>
+          <p class="section-intro">
+            Beim Verpacken: Band ans Handy halten oder Code abtippen, Bestellung wählen, zuordnen.
+            Ab diesem Moment zeigt das Band auf das Profil.
+          </p>
+
+          <form id="assign-form" class="assign-grid">
+            <div class="form-row">
+              <label for="assign-code">Band-Code</label>
+              <div class="scan-row">
+                <input type="text" id="assign-code" placeholder="z.B. K7X2M9QP" maxlength="8"
+                       pattern="[A-Za-z0-9]{8}" required autocapitalize="characters">
+                <button type="button" id="scan-btn" class="btn btn-secondary">Band scannen</button>
+              </div>
+              <small id="scan-status"></small>
+            </div>
+
+            <div class="form-row">
+              <label for="assign-profile">Offene Bestellung</label>
+              <select id="assign-profile" required></select>
+              <small><button type="button" id="refresh-pending" class="link-btn">Liste aktualisieren</button></small>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="assign-btn">Zuordnen</button>
+          </form>
+
+          <p id="assign-error" class="form-error hidden" role="alert"></p>
+          <p id="assign-success" class="success-message hidden" role="status"></p>
+        </div>
+      </section>
+
+      <!-- Schritt 3: Sperren ------------------------------------------ -->
+      <section class="section">
+        <div class="container">
+          <h2>3. Band sperren</h2>
+          <p class="section-intro">
+            Bei Verlust oder Reklamation. Die Notfallseite zeigt danach keine Daten mehr an.
+          </p>
+          <form id="disable-form" class="inline-form">
+            <div class="form-row">
+              <label for="disable-code">Band-Code</label>
+              <input type="text" id="disable-code" maxlength="8" pattern="[A-Za-z0-9]{8}" required
+                     autocapitalize="characters">
+            </div>
+            <button type="submit" class="btn btn-secondary">Sperren</button>
+          </form>
+          <p id="disable-error" class="form-error hidden" role="alert"></p>
+          <p id="disable-success" class="success-message hidden" role="status"></p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <p>&copy; 2026 SafeBand – interner Bereich</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2/dist/umd/supabase.js"
+          integrity="sha384-OUpie84zd1LdwNlK9uJJQRwab0BLqo3eKYKFh7hSVL58FSk7wPp2l0kfUMIIoaQd"
+          crossorigin="anonymous"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
