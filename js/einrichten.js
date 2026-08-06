@@ -62,10 +62,18 @@ if (setupForm) {
   });
 }
 
-/** Der Shop hängt die Bestellnummer nach der Zahlung an die Weiterleitung an. */
+/**
+ * Der Shop hängt die Bestellnummer nach der Zahlung an die Weiterleitung an.
+ * Fehlt sie, ist die Seite vermutlich direkt aufgerufen worden – dann erklären
+ * wir kurz, wohin sie gehört, statt das Formular zu sperren.
+ */
 function prefillOrderRef() {
   const ref = new URLSearchParams(window.location.search).get("bestellung");
-  if (ref) document.getElementById("order-ref").value = ref;
+  if (ref) {
+    document.getElementById("order-ref").value = ref;
+    return;
+  }
+  document.getElementById("order-notice").classList.remove("hidden");
 }
 
 function value(id) {

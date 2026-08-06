@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SafeBand bestellen – NFC-Notfallarmband für Kinder, ältere Menschen und Betreuungspersonen. CHF 29.90 inkl. Notfallprofil.">
+  <title>SafeBand bestellen – NFC-Notfallarmband</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav container">
+      <a href="index.html" class="logo-block">
+        <img src="assets/Safeband_logo.png" alt="SafeBand – Sicher. Verbunden. Geschützt." class="site-logo" width="132" height="40">
+      </a>
+      <button class="nav-toggle" aria-label="Menü öffnen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Start</a></li>
+        <li><a href="bestellen.html" class="active">Bestellen</a></li>
+        <li><a href="/n/DEMO0001">Demo</a></li>
+        <li><a href="datenschutz.html">Datenschutz</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>SafeBand bestellen</h1>
+        <p>
+          Ein Armband, ein Notfallprofil, ein Verwaltungslink. Wir verknüpfen dein Band vor dem
+          Versand – beim Auspacken ist es sofort einsatzbereit.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container order-layout" id="order-view">
+        <div class="product-media">
+          <img src="assets/product-band.png"
+               alt="Weisses SafeBand NFC-Silikonarmband mit schwarzem Aufdruck „NFC – Scan me“ auf einem Steinquader"
+               class="product-photo" width="1024" height="768">
+          <div class="product-facts">
+            <h2>Im Lieferumfang</h2>
+            <ul class="fact-list">
+              <li>1 SafeBand NFC-Armband, wasserfestes Silikon</li>
+              <li>Notfallprofil in der SafeBand-Datenbank</li>
+              <li>Persönlicher Verwaltungslink zum Ändern und Sperren</li>
+              <li>Kurzanleitung für Angehörige und Betreuungspersonen</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="order-panel">
+          <p class="product-price">CHF 29.90 <span class="price-note">inkl. MwSt.</span></p>
+          <p class="product-lead">
+            Das SafeBand trägt einen schreibgeschützten NFC-Chip mit einer kurzen Adresse – mehr
+            nicht. Hält ein Helfer sein Smartphone daran, öffnet sich die Notfallseite mit den
+            Angaben, die du freigegeben hast. Kontaktdaten der Angehörigen bleiben unsichtbar.
+          </p>
+          <p class="delivery-note">
+            Versand CHF 3.50 als A-Post, ab CHF 60.– kostenlos. Lieferzeit 2–4 Werktage innerhalb
+            der Schweiz.
+          </p>
+
+          <form id="order-form" class="setup-form">
+            <h2>Ausführung</h2>
+
+            <div class="form-split">
+              <div class="form-row">
+                <label for="order-color">Farbe *</label>
+                <select id="order-color" required>
+                  <option value="weiss">Weiss</option>
+                  <option value="mint">Mintgrün</option>
+                  <option value="navy">Navyblau</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label for="order-size">Grösse *</label>
+                <select id="order-size" required>
+                  <option value="s">S – Kind (14–17 cm)</option>
+                  <option value="m" selected>M – Jugendliche (17–20 cm)</option>
+                  <option value="l">L – Erwachsene (20–24 cm)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row form-row--narrow">
+              <label for="order-quantity">Menge *</label>
+              <input type="number" id="order-quantity" value="1" min="1" max="10" required>
+              <small>Pro Armband legst du anschliessend ein eigenes Notfallprofil an.</small>
+            </div>
+
+            <hr class="form-divider">
+
+            <h2>Lieferadresse</h2>
+
+            <div class="form-row">
+              <label for="order-name">Vor- und Nachname *</label>
+              <input type="text" id="order-name" placeholder="z.B. Anna Müller" required maxlength="80"
+                     autocomplete="name">
+            </div>
+
+            <div class="form-row">
+              <label for="order-street">Strasse und Nr. *</label>
+              <input type="text" id="order-street" placeholder="z.B. Bahnhofstrasse 12" required maxlength="80"
+                     autocomplete="street-address">
+            </div>
+
+            <div class="form-split form-split--zip">
+              <div class="form-row">
+                <label for="order-zip">PLZ *</label>
+                <input type="text" id="order-zip" placeholder="4051" required maxlength="8"
+                       inputmode="numeric" autocomplete="postal-code">
+              </div>
+
+              <div class="form-row">
+                <label for="order-city">Ort *</label>
+                <input type="text" id="order-city" placeholder="Basel" required maxlength="60"
+                       autocomplete="address-level2">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label for="order-email">E-Mail *</label>
+              <input type="email" id="order-email" placeholder="name@beispiel.ch" required maxlength="120"
+                     autocomplete="email">
+              <small>Für die Bestellbestätigung mit deiner Bestellnummer.</small>
+            </div>
+
+            <div class="order-summary">
+              <div class="summary-row">
+                <span>SafeBand Armband × <span id="sum-quantity">1</span></span>
+                <span id="sum-subtotal">CHF 29.90</span>
+              </div>
+              <div class="summary-row">
+                <span>Versand</span>
+                <span id="sum-shipping">CHF 3.50</span>
+              </div>
+              <div class="summary-row summary-row--total">
+                <span>Total</span>
+                <span id="sum-total">CHF 33.40</span>
+              </div>
+            </div>
+
+            <div class="consent-row">
+              <input type="checkbox" id="order-consent" required>
+              <label for="order-consent">
+                Ich habe die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>
+                gelesen und bin mit der Bearbeitung meiner Bestellung einverstanden. *
+              </label>
+            </div>
+
+            <p class="demo-notice">
+              Demo-Bestellung: SafeBand entsteht als Schulprojektarbeit der TEKO Basel. Es wird
+              keine Zahlung ausgelöst und deine Adressdaten werden nicht gespeichert – sie
+              verlassen diese Seite nicht.
+            </p>
+
+            <p id="order-error" class="form-error hidden" role="alert"></p>
+
+            <button type="submit" class="btn btn-primary btn-full">Kostenpflichtig bestellen</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="container narrow">
+        <aside id="order-result" class="setup-result hidden">
+          <h2>✅ Bestellung eingegangen</h2>
+          <p>
+            Vielen Dank für deine Bestellung. Sie läuft unter dieser Bestellnummer – normalerweise
+            bekommst du sie zusätzlich per E-Mail zugeschickt.
+          </p>
+
+          <div class="url-box">
+            <code id="result-order-ref"></code>
+            <button type="button" id="copy-ref-btn" class="btn btn-secondary btn-sm">Kopieren</button>
+          </div>
+
+          <h3>Nächster Schritt: Notfalldaten hinterlegen</h3>
+          <p>
+            Damit wir dein Armband noch vor dem Versand mit deinem Profil verknüpfen können,
+            brauchen wir jetzt die Angaben für den Notfall. Das dauert rund zwei Minuten.
+          </p>
+          <a id="result-setup-link" href="einrichten.html" class="btn btn-primary btn-full">
+            Jetzt Notfalldaten hinterlegen
+          </a>
+
+          <div class="result-steps">
+            <ol>
+              <li><strong>Erledigt:</strong> Bestellung aufgegeben</li>
+              <li>Notfalldaten hinterlegen und Verwaltungslink erhalten</li>
+              <li>Wir verknüpfen dein Band und versenden es</li>
+              <li>Auspacken, mit dem Handy antippen, fertig</li>
+            </ol>
+          </div>
+
+          <p class="qr-hint">
+            Im Rahmen der Schulprojektarbeit wird weder eine Zahlung ausgelöst noch ein Paket
+            verschickt. Die Bestellnummer ist echt genug, um den weiteren Ablauf zu zeigen.
+          </p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="footer-logo-wrap">
+          <img src="assets/Safeband_logo.png" alt="SafeBand" class="site-logo site-logo--sm" width="106" height="32">
+        </div>
+        <p class="footer-tagline">Sicher. Verbunden. Geschützt.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer Navigation">
+        <a href="index.html">Start</a>
+        <a href="bestellen.html">Bestellen</a>
+        <a href="/n/DEMO0001">Demo</a>
+        <a href="datenschutz.html">Datenschutz</a>
+        <a href="index.html#kontakt">Kontakt</a>
+      </nav>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; 2026 SafeBand – Projektarbeit TEKO</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/bestellen.js"></script>
+</body>
+</html>

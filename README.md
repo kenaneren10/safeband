@@ -11,9 +11,12 @@ beschreiben und schreibschützen, dann ins Lager legen. Die Bänder sind zu dies
 noch keinem Menschen zugeordnet.
 
 **Bestellung**
-Nach der Zahlung landet der Käufer auf `/einrichten.html?bestellung=SB-10427`. Er trägt die
-Daten ein und bestätigt die Datenschutzerklärung. Im Hintergrund entsteht ein Profil plus ein
-Einwilligungsnachweis. Der Kunde bekommt einen Verwaltungslink.
+Auf `/bestellen.html` wählt der Kunde Ausführung und Menge und gibt seine Lieferadresse an. Die
+Seite ersetzt im Rahmen der Projektarbeit den Shop: Sie löst keine Zahlung aus, speichert die
+Adresse nicht und erzeugt die Bestellnummer im Browser. Danach landet der Käufer auf
+`/einrichten.html?bestellung=SB-10427`. Er trägt die Daten ein und bestätigt die
+Datenschutzerklärung. Im Hintergrund entsteht ein Profil plus ein Einwilligungsnachweis. Der
+Kunde bekommt einen Verwaltungslink.
 
 **Versand**
 Beim Verpacken unter `/admin.html` das Band ans Handy halten (oder den Code abtippen), die
@@ -33,6 +36,16 @@ Projekt anlegen, als Region **Frankfurt (eu-central-1)** oder **Zürich** wähle
 Gesundheitsdaten sollten die Server in der EU/Schweiz stehen.
 
 Dann `supabase/migrations/0001_init.sql` im SQL-Editor ausführen.
+
+Die Migration legt am Ende einen Demo-Datensatz an: Band `DEMO0001` mit dem Profil „Luca" und
+einem erfundenen Notfallkontakt. Damit lässt sich `/n/DEMO0001` sofort ausprobieren. Vor dem
+Livegang gehört er gelöscht:
+
+```sql
+delete from public.profiles p using public.bands b
+where b.profile_id = p.id and b.code = 'DEMO0001';
+delete from public.bands where code = 'DEMO0001';
+```
 
 ### 2. Admin-Konto
 
@@ -111,8 +124,9 @@ Vor dem Livegang braucht ihr zusätzlich einen Auftragsverarbeitungsvertrag mit 
 - **Benachrichtigung der Notfallkontakte.** Helfer-Meldungen landen aktuell in
   `helper_messages`, es geht noch keine E-Mail oder SMS raus. Dafür braucht es eine Supabase
   Edge Function mit einem Trigger auf der Tabelle (Resend oder Twilio).
-- **Shop-Anbindung.** Am schnellsten ist ein Stripe Payment Link mit Weiterleitung auf
-  `/einrichten.html?bestellung={CHECKOUT_SESSION_ID}`. Sauberer ist ein Webhook, der die
-  Bestellung vorab anlegt, damit Bestellnummern nicht abtippbar sind.
+- **Shop-Anbindung.** `/bestellen.html` bildet den Ablauf nur nach. Am schnellsten wäre ein
+  Stripe Payment Link mit Weiterleitung auf `/einrichten.html?bestellung={CHECKOUT_SESSION_ID}`.
+  Sauberer ist ein Webhook, der die Bestellung vorab anlegt, damit Bestellnummern nicht
+  abtippbar sind.
 - **Bestätigungsmail mit dem Verwaltungslink.** Steht bisher nur auf der Erfolgsseite.
 - **Kontaktformular auf der Startseite** schreibt noch in `localStorage` und verschickt nichts.
