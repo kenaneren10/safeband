@@ -226,6 +226,44 @@
           </table>
         </div>
       </section>
+
+      <!-- Profile ---------------------------------------------------------- -->
+      <section class="section">
+        <div class="container">
+          <h2>Profile</h2>
+          <p class="section-intro">
+            Alle Notfallprofile, unabhängig davon, ob schon ein Band zugeteilt ist. Zum Löschen muss
+            ein zugeteiltes Band zuerst entfernt werden (Sperren, dann Löschen in der
+            Bänder-Übersicht).
+          </p>
+
+          <div class="overview-controls">
+            <div class="form-row">
+              <label for="profiles-search">Suche</label>
+              <input type="search" id="profiles-search" placeholder="Name oder Bestellnummer"
+                     autocomplete="off" spellcheck="false">
+            </div>
+            <button type="button" id="profiles-refresh" class="btn btn-secondary btn-sm">Aktualisieren</button>
+          </div>
+
+          <p id="profiles-error" class="form-error hidden" role="alert"></p>
+          <p id="profiles-empty" class="overview-empty hidden">Keine Profile gefunden.</p>
+
+          <table class="admin-table" id="profiles-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Kategorie</th>
+                <th>Bestellnummer</th>
+                <th>Band</th>
+                <th>Seit</th>
+                <th>Aktion</th>
+              </tr>
+            </thead>
+            <tbody id="profiles-rows"></tbody>
+          </table>
+        </div>
+      </section>
     </div>
   </main>
 

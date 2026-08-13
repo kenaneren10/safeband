@@ -144,3 +144,7 @@ async function fetchBands({ status, search } = {}) {
 async function fetchOrders({ search } = {}) {
   return unwrap(await sb.rpc("list_orders", { p_search: search || null, p_limit: 200 }));
 }
+
+async function fetchProfiles({ search } = {}) {
+  return unwrap(await sb.rpc("list_profiles", { p_search: search || null, p_limit: 200 }));
+}

@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initProducePanel();
   initOverview();
   initOrders();
+  initProfilesSection();
   initGenerate();
   restoreSession();
 });
@@ -77,7 +78,7 @@ async function enterApp() {
   userEl.classList.remove("hidden");
 
   await Promise.all([loadPendingProfiles(), loadOrders()]);
-  await Promise.all([loadStats(), loadOverview()]);
+  await Promise.all([loadStats(), loadOverview(), loadProfilesTable()]);
   showNfcSupport();
 }
 
@@ -391,6 +392,80 @@ function orderRow(order) {
       <td class="date-cell">${new Date(order.created_at).toLocaleDateString("de-CH")}</td>
       <td><span class="badge ${statusClass}">${statusText}</span></td>
     </tr>`;
+}
+
+// --- Profile ------------------------------------------------------------------
+
+function initProfilesSection() {
+  document.getElementById("profiles-refresh").addEventListener("click", loadProfilesTable);
+
+  let timer;
+  document.getElementById("profiles-search").addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(loadProfilesTable, 300);
+  });
+}
+
+async function loadProfilesTable() {
+  hide("profiles-error");
+
+  const table = document.getElementById("profiles-table");
+  const empty = document.getElementById("profiles-empty");
+
+  let profiles;
+  try {
+    profiles = await fetchProfiles({ search: document.getElementById("profiles-search").value.trim() });
+  } catch (err) {
+    showMessage("profiles-error", err.message || "Profile konnten nicht geladen werden.");
+    return;
+  }
+
+  table.classList.toggle("hidden", profiles.length === 0);
+  empty.classList.toggle("hidden", profiles.length > 0);
+
+  document.getElementById("profiles-rows").innerHTML = profiles.map(profileTableRow).join("");
+
+  document.querySelectorAll("#profiles-rows .profile-table-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => deleteProfileTableRow(btn));
+  });
+}
+
+function profileTableRow(profile) {
+  const band = profile.band_code
+    ? `<code>${escapeHtml(profile.band_code)}</code> <span class="badge ${badgeClass(profile.band_status)}">${
+        STATUS_LABELS[profile.band_status] || profile.band_status
+      }</span>`
+    : "<span class='muted'>–</span>";
+
+  const action = profile.band_code
+    ? "<span class='muted'>Erst Band entfernen</span>"
+    : `<button type="button" class="btn btn-secondary btn-sm profile-table-delete-btn" data-profile-id="${profile.id}">Löschen</button>`;
+
+  return `
+    <tr>
+      <td>${escapeHtml(`${profile.first_name} ${profile.last_name}`)}</td>
+      <td>${CATEGORY_LABELS[profile.category] || profile.category}</td>
+      <td>${profile.order_ref ? escapeHtml(profile.order_ref) : "<span class='muted'>–</span>"}</td>
+      <td>${band}</td>
+      <td class="date-cell">${new Date(profile.created_at).toLocaleDateString("de-CH")}</td>
+      <td>${action}</td>
+    </tr>`;
+}
+
+async function deleteProfileTableRow(btn) {
+  if (!confirm("Dieses Profil endgültig löschen? Das lässt sich nicht rückgängig machen.")) {
+    return;
+  }
+
+  btn.disabled = true;
+
+  try {
+    await deleteProfile(btn.dataset.profileId);
+    await Promise.all([loadProfilesTable(), loadPendingProfiles()]);
+  } catch (err) {
+    showMessage("profiles-error", err.message || "Löschen fehlgeschlagen.");
+    btn.disabled = false;
+  }
 }
 
 // --- Produktion (+-Panel in der Übersicht) -----------------------------------
