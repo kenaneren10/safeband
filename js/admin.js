@@ -154,8 +154,14 @@ async function loadOverview() {
     btn.addEventListener("click", () => deleteBandRow(btn.closest("tr")));
   });
 
+  document.querySelectorAll("#overview-rows .assign-toggle-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      btn.closest("tr").querySelector(".assign-panel").classList.toggle("hidden");
+    });
+  });
+
   document.querySelectorAll("#overview-rows .assign-btn").forEach((btn) => {
-    btn.addEventListener("click", () => assignBandRow(btn.closest("tr")));
+    btn.addEventListener("click", () => assignBandRow(btn.closest("tr"), btn.dataset.profileId));
   });
 }
 
@@ -169,6 +175,7 @@ function overviewRow(band) {
   const since = band.assigned_at || band.created_at;
   const locked = band.status === "disabled";
   const deletable = band.status !== "assigned";
+  const unassigned = band.status === "unassigned";
 
   return `
     <tr data-code="${band.code}" data-status="${band.status}" data-has-profile="${Boolean(band.first_name)}">
@@ -177,38 +184,40 @@ function overviewRow(band) {
       <td>${owner}</td>
       <td class="date-cell">${new Date(since).toLocaleDateString("de-CH")}</td>
       <td class="action-cell">
-        ${band.status === "unassigned" ? `<div class="action-row">${assignControlHtml()}</div>` : ""}
         <div class="action-row">
           <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
+          ${unassigned ? '<button type="button" class="btn btn-secondary btn-sm assign-toggle-btn">Zuteilen</button>' : ""}
           <button type="button" class="btn btn-secondary btn-sm status-btn">${locked ? "Freigeben" : "Sperren"}</button>
           ${deletable ? '<button type="button" class="btn btn-secondary btn-sm delete-btn">Löschen</button>' : ""}
           <span class="write-status"></span>
         </div>
+        ${unassigned ? `<div class="assign-panel hidden">${assignPanelHtml()}</div>` : ""}
       </td>
     </tr>`;
 }
 
-function assignControlHtml() {
+function assignPanelHtml() {
   if (!pendingProfiles.length) {
-    return "<span class='muted'>Keine offene Bestellung</span>";
+    return "<p class='muted'>Keine offene Bestellung.</p>";
   }
 
-  const options = pendingProfiles
+  const items = pendingProfiles
     .map((p) => {
       const label = `${p.order_ref || "ohne Nummer"} – ${p.first_name} (${CATEGORY_LABELS[p.category] || p.category})`;
-      return `<option value="${p.id}">${escapeHtml(label)}</option>`;
+      return `
+        <li>
+          <span>${escapeHtml(label)}</span>
+          <button type="button" class="btn btn-primary btn-sm assign-btn" data-profile-id="${p.id}">Zuweisen</button>
+        </li>`;
     })
     .join("");
 
-  return `
-    <select class="assign-select">${options}</select>
-    <button type="button" class="btn btn-primary btn-sm assign-btn">Zuteilen</button>`;
+  return `<ul class="assign-list">${items}</ul>`;
 }
 
-async function assignBandRow(row) {
+async function assignBandRow(row, profileId) {
   const code = row.dataset.code;
-  const profileId = row.querySelector(".assign-select").value;
-  const btn = row.querySelector(".assign-btn");
+  const btn = row.querySelector(`.assign-btn[data-profile-id="${profileId}"]`);
 
   btn.disabled = true;
 

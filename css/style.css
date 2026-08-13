@@ -1627,16 +1627,26 @@ a:hover {
   border-radius: var(--radius);
 }
 
-.assign-select {
-  padding: 0.5rem 0.6rem;
-  border: 1px solid var(--color-border);
+.assign-panel {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--color-bg-alt);
   border-radius: 8px;
-  font-family: inherit;
-  font-size: 0.875rem;
-  width: 12rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+}
+
+.assign-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.assign-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.85rem;
 }
 
 .overview-controls {
