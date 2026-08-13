@@ -24,6 +24,7 @@ const STATUS_LABELS = {
 
 document.addEventListener("DOMContentLoaded", () => {
   initLogin();
+  initTabs();
   initProducePanel();
   initOverview();
   initOrders();
@@ -31,6 +32,18 @@ document.addEventListener("DOMContentLoaded", () => {
   initGenerate();
   restoreSession();
 });
+
+function initTabs() {
+  document.querySelectorAll(".admin-tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".admin-tab").forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      document.querySelectorAll(".admin-tab-panel").forEach((panel) => panel.classList.add("hidden"));
+      document.getElementById(`tab-${tab.dataset.tab}`).classList.remove("hidden");
+    });
+  });
+}
 
 // --- Anmeldung --------------------------------------------------------------
 

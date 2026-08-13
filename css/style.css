@@ -1620,6 +1620,46 @@ a:hover {
   margin: 1.5rem 0 0.75rem;
 }
 
+.admin-tabs {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.admin-tabs-inner {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+.admin-tab {
+  padding: 1rem 0.25rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-tab + .admin-tab {
+  margin-left: 1.5rem;
+}
+
+.admin-tab:hover {
+  color: var(--color-navy);
+}
+
+.admin-tab.active {
+  color: var(--color-navy);
+  border-bottom-color: var(--color-mint);
+}
+
 #produce-panel {
   margin: 0.5rem 0 1.75rem;
   padding: 1.5rem;

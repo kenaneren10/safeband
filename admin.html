@@ -53,8 +53,16 @@
         </div>
       </section>
 
+      <nav class="admin-tabs">
+        <div class="container admin-tabs-inner">
+          <button type="button" class="admin-tab active" data-tab="bands">Bänder-Übersicht</button>
+          <button type="button" class="admin-tab" data-tab="orders">Bestellungen</button>
+          <button type="button" class="admin-tab" data-tab="profiles">Profile</button>
+        </div>
+      </nav>
+
       <!-- Übersicht ---------------------------------------------------- -->
-      <section class="section">
+      <section class="section admin-tab-panel" id="tab-bands">
         <div class="container">
           <h2>Bänder-Übersicht</h2>
           <p class="section-intro">
@@ -191,7 +199,7 @@
       </section>
 
       <!-- Bestellungen --------------------------------------------------- -->
-      <section class="section section-alt">
+      <section class="section admin-tab-panel hidden" id="tab-orders">
         <div class="container">
           <h2>Bestellungen</h2>
           <p class="section-intro">
@@ -228,7 +236,7 @@
       </section>
 
       <!-- Profile ---------------------------------------------------------- -->
-      <section class="section">
+      <section class="section admin-tab-panel hidden" id="tab-profiles">
         <div class="container">
           <h2>Profile</h2>
           <p class="section-intro">
