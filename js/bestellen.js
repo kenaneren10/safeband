@@ -16,9 +16,7 @@ const orderView = document.getElementById("order-view");
 const orderResult = document.getElementById("order-result");
 const orderError = document.getElementById("order-error");
 const orderSubmit = document.getElementById("order-submit");
-const orderRefEl = document.getElementById("result-order-ref");
 const setupLinkEl = document.getElementById("result-setup-link");
-const copyRefBtn = document.getElementById("copy-ref-btn");
 
 if (orderForm) {
   renderTotals();
@@ -45,15 +43,6 @@ if (orderForm) {
     } finally {
       setLoading(false);
     }
-  });
-
-  copyRefBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(orderRefEl.textContent).then(() => {
-      copyRefBtn.textContent = "Kopiert!";
-      setTimeout(() => {
-        copyRefBtn.textContent = "Kopieren";
-      }, 2000);
-    });
   });
 }
 
@@ -83,7 +72,6 @@ function chf(amount) {
 }
 
 function showConfirmation(orderRef) {
-  orderRefEl.textContent = orderRef;
   setupLinkEl.href = "einrichten.html?bestellung=" + encodeURIComponent(orderRef);
 
   orderView.classList.add("hidden");
