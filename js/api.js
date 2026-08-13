@@ -35,6 +35,10 @@ async function fetchPublicProfile(code) {
   return rows && rows.length ? rows[0] : null;
 }
 
+async function createOrder(payload) {
+  return unwrap(await sb.rpc("create_order", { payload }));
+}
+
 async function createProfile(payload) {
   return unwrap(
     await sb.rpc("create_profile", {
@@ -121,4 +125,8 @@ async function fetchBands({ status, search } = {}) {
       p_limit: 200,
     })
   );
+}
+
+async function fetchOrders({ search } = {}) {
+  return unwrap(await sb.rpc("list_orders", { p_search: search || null, p_limit: 200 }));
 }

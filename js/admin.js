@@ -22,6 +22,7 @@ const STATUS_LABELS = {
 document.addEventListener("DOMContentLoaded", () => {
   initLogin();
   initOverview();
+  initOrders();
   initGenerate();
   initAssign();
   initDisable();
@@ -73,7 +74,7 @@ async function enterApp() {
   userEl.textContent = session.user.email;
   userEl.classList.remove("hidden");
 
-  await Promise.all([loadStats(), loadPendingProfiles(), loadOverview()]);
+  await Promise.all([loadStats(), loadPendingProfiles(), loadOverview(), loadOrders()]);
   showNfcSupport();
 }
 
@@ -192,6 +193,52 @@ async function toggleBandStatus(row) {
     showMessage("overview-error", err.message || "Änderung fehlgeschlagen.");
     btn.disabled = false;
   }
+}
+
+// --- Bestellungen ------------------------------------------------------------
+
+function initOrders() {
+  document.getElementById("orders-refresh").addEventListener("click", loadOrders);
+
+  let timer;
+  document.getElementById("orders-search").addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(loadOrders, 300);
+  });
+}
+
+async function loadOrders() {
+  hide("orders-error");
+
+  const table = document.getElementById("orders-table");
+  const empty = document.getElementById("orders-empty");
+
+  let orders;
+  try {
+    orders = await fetchOrders({ search: document.getElementById("orders-search").value.trim() });
+  } catch (err) {
+    showMessage("orders-error", err.message || "Bestellungen konnten nicht geladen werden.");
+    return;
+  }
+
+  table.classList.toggle("hidden", orders.length === 0);
+  empty.classList.toggle("hidden", orders.length > 0);
+
+  document.getElementById("orders-rows").innerHTML = orders.map(orderRow).join("");
+}
+
+function orderRow(order) {
+  return `
+    <tr>
+      <td><code>${escapeHtml(order.order_ref)}</code></td>
+      <td>${escapeHtml(order.name)}</td>
+      <td>${escapeHtml(order.street)}<br><small>${escapeHtml(order.zip)} ${escapeHtml(order.city)}</small></td>
+      <td>${escapeHtml(order.email)}</td>
+      <td class="date-cell">${new Date(order.created_at).toLocaleDateString("de-CH")}</td>
+      <td><span class="badge ${order.has_profile ? "badge-ok" : "badge-stock"}">${
+        order.has_profile ? "Hinterlegt" : "Ausstehend"
+      }</span></td>
+    </tr>`;
 }
 
 // --- Schritt 1: Produktion --------------------------------------------------

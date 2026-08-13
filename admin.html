@@ -97,6 +97,43 @@
         </div>
       </section>
 
+      <!-- Bestellungen --------------------------------------------------- -->
+      <section class="section section-alt">
+        <div class="container">
+          <h2>Bestellungen</h2>
+          <p class="section-intro">
+            Eingegangene Bestellungen mit Lieferadresse – auch die, für die noch keine
+            Notfalldaten hinterlegt wurden.
+          </p>
+
+          <div class="overview-controls">
+            <div class="form-row">
+              <label for="orders-search">Suche</label>
+              <input type="search" id="orders-search" placeholder="Bestellnummer, Name oder Ort"
+                     autocomplete="off" spellcheck="false">
+            </div>
+            <button type="button" id="orders-refresh" class="btn btn-secondary btn-sm">Aktualisieren</button>
+          </div>
+
+          <p id="orders-error" class="form-error hidden" role="alert"></p>
+          <p id="orders-empty" class="overview-empty hidden">Keine Bestellungen gefunden.</p>
+
+          <table class="admin-table" id="orders-table">
+            <thead>
+              <tr>
+                <th>Bestellnummer</th>
+                <th>Name</th>
+                <th>Adresse</th>
+                <th>E-Mail</th>
+                <th>Seit</th>
+                <th>Notfalldaten</th>
+              </tr>
+            </thead>
+            <tbody id="orders-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- Schritt 1: Produktion --------------------------------------- -->
       <section class="section">
         <div class="container">

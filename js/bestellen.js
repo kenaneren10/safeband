@@ -1,9 +1,11 @@
 /**
  * SafeBand – Bestellseite (Demo-Shop)
  *
- * Im Rahmen der Schulprojektarbeit gibt es keinen Zahlungsdienstleister: Die
- * Bestellnummer entsteht im Browser und die Adressdaten verlassen die Seite nicht.
- * Einzig die Bestellnummer wird an das Einrichtungsformular weitergereicht.
+ * Im Rahmen der Schulprojektarbeit gibt es keinen Zahlungsdienstleister, die
+ * Bestellung landet aber echt in der Datenbank: Name, Adresse und E-Mail
+ * gehen an create_order, das serverseitig eine eindeutige Bestellnummer
+ * erzeugt. So sieht die Verwaltung die Bestellung auch dann, wenn der Käufer
+ * die Notfalldaten nie hinterlegt.
  */
 
 const UNIT_PRICE = 29.9;
@@ -13,6 +15,7 @@ const orderForm = document.getElementById("order-form");
 const orderView = document.getElementById("order-view");
 const orderResult = document.getElementById("order-result");
 const orderError = document.getElementById("order-error");
+const orderSubmit = document.getElementById("order-submit");
 const orderRefEl = document.getElementById("result-order-ref");
 const setupLinkEl = document.getElementById("result-setup-link");
 const copyRefBtn = document.getElementById("copy-ref-btn");
@@ -20,10 +23,28 @@ const copyRefBtn = document.getElementById("copy-ref-btn");
 if (orderForm) {
   renderTotals();
 
-  orderForm.addEventListener("submit", (e) => {
+  orderForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     orderError.classList.add("hidden");
-    showConfirmation(generateOrderRef());
+
+    const payload = {
+      name: value("order-name"),
+      street: value("order-street"),
+      zip: value("order-zip"),
+      city: value("order-city"),
+      email: value("order-email"),
+      consent: document.getElementById("order-consent").checked,
+    };
+
+    setLoading(true);
+    try {
+      const result = await createOrder(payload);
+      showConfirmation(result.order_ref);
+    } catch (err) {
+      showError(err.message || "Bestellung fehlgeschlagen. Bitte später erneut versuchen.");
+    } finally {
+      setLoading(false);
+    }
   });
 
   copyRefBtn.addEventListener("click", () => {
@@ -36,9 +57,19 @@ if (orderForm) {
   });
 }
 
-/** Fünfstellig wie im echten Shop, damit sie sich abtippen lässt. */
-function generateOrderRef() {
-  return "SB-" + (10000 + Math.floor(Math.random() * 90000));
+function value(id) {
+  return document.getElementById(id).value.trim();
+}
+
+function setLoading(loading) {
+  orderSubmit.disabled = loading;
+  orderSubmit.textContent = loading ? "Wird übermittelt …" : "Kostenpflichtig bestellen";
+}
+
+function showError(message) {
+  orderError.textContent = message;
+  orderError.classList.remove("hidden");
+  orderError.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function renderTotals() {
