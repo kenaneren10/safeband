@@ -7,7 +7,22 @@
  * sonst gibt die Datenbank beide Felder gar nicht erst heraus.
  */
 
-const bandCode = new URLSearchParams(window.location.search).get("id");
+/**
+ * Der Code steckt je nach Aufrufweg an unterschiedlicher Stelle: Netlify und
+ * Vercel schreiben /n/CODE serverseitig auf /notfall.html?id=CODE um, dabei
+ * bleibt die im Browser sichtbare Adresse aber /n/CODE – ohne Query-String.
+ * window.location.search ist in dem Fall leer, deshalb zusätzlich aus dem
+ * Pfad lesen, falls kein "id"-Parameter da ist.
+ */
+function getBandCode() {
+  const fromQuery = new URLSearchParams(window.location.search).get("id");
+  if (fromQuery) return fromQuery;
+
+  const match = window.location.pathname.match(/\/n\/([A-Za-z0-9]{8})\/?$/);
+  return match ? match[1] : null;
+}
+
+const bandCode = getBandCode();
 
 const loadingEl = document.getElementById("loading");
 const notFoundEl = document.getElementById("not-found");
