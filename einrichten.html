@@ -61,10 +61,17 @@
             <small>Steht in deiner Bestellbestätigung. Damit ordnen wir dir das richtige Band zu.</small>
           </div>
 
-          <div class="form-row">
-            <label for="first-name">Vorname (öffentlich sichtbar) *</label>
-            <input type="text" id="first-name" placeholder="z.B. Luca" required maxlength="30">
+          <div class="form-split">
+            <div class="form-row">
+              <label for="first-name">Vorname *</label>
+              <input type="text" id="first-name" placeholder="z.B. Luca" required maxlength="30">
+            </div>
+            <div class="form-row">
+              <label for="last-name">Nachname *</label>
+              <input type="text" id="last-name" placeholder="z.B. Bernasconi" required maxlength="30">
+            </div>
           </div>
+          <p class="form-hint">Vor- und Nachname sind öffentlich sichtbar, wenn das Armband gescannt wird.</p>
 
           <div class="form-row">
             <label for="category">Kategorie *</label>
@@ -96,8 +103,10 @@
           </p>
 
           <div class="form-row">
-            <label for="contact-name">Name des Notfallkontakts *</label>
-            <input type="text" id="contact-name" placeholder="z.B. Anna Müller (Mutter)" required maxlength="60">
+            <label for="contact-name">Name oder Institution des Notfallkontakts *</label>
+            <input type="text" id="contact-name"
+                   placeholder="z.B. Anna Müller (Mutter) oder Alterszentrum Sonnengarten"
+                   required maxlength="60">
           </div>
 
           <div class="form-row">

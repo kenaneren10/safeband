@@ -23,6 +23,7 @@ if (setupForm) {
     const payload = {
       order_ref: value("order-ref"),
       first_name: value("first-name"),
+      last_name: value("last-name"),
       category: value("category"),
       public_note: value("public-note"),
       medical_note: value("medical-note"),

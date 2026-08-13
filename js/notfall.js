@@ -62,7 +62,7 @@ async function loadProfile(code) {
   loadingEl.classList.add("hidden");
   profileSection.classList.remove("hidden");
 
-  document.getElementById("info-name").textContent = profile.first_name;
+  document.getElementById("info-name").textContent = `${profile.first_name} ${profile.last_name}`;
   document.getElementById("info-category").textContent =
     CATEGORY_LABELS[profile.category] || profile.category;
 

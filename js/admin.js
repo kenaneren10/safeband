@@ -171,7 +171,7 @@ async function loadOverview() {
 
 function overviewRow(band) {
   const owner = band.first_name
-    ? `${escapeHtml(band.first_name)}${
+    ? `${escapeHtml(`${band.first_name} ${band.last_name}`)}${
         band.order_ref ? ` <small>${escapeHtml(band.order_ref)}</small>` : ""
       }`
     : "<span class='muted'>–</span>";
@@ -207,7 +207,7 @@ function assignPanelHtml() {
 
   const items = pendingProfiles
     .map((p) => {
-      const label = `${p.order_ref || "ohne Nummer"} – ${p.first_name} (${CATEGORY_LABELS[p.category] || p.category})`;
+      const label = `${p.order_ref || "ohne Nummer"} – ${p.first_name} ${p.last_name} (${CATEGORY_LABELS[p.category] || p.category})`;
       return `
         <li>
           <span>${escapeHtml(label)}</span>

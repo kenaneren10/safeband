@@ -43,6 +43,7 @@ async function load() {
   }
 
   fill("first-name", profile.first_name);
+  fill("last-name", profile.last_name);
   fill("category", profile.category);
   fill("public-note", profile.public_note);
   fill("medical-note", profile.medical_note);
@@ -72,6 +73,7 @@ form.addEventListener("submit", async (e) => {
   try {
     await updateProfileByToken(manageToken, {
       first_name: value("first-name"),
+      last_name: value("last-name"),
       category: value("category"),
       public_note: value("public-note"),
       medical_note: value("medical-note"),
