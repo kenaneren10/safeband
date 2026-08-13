@@ -138,6 +138,10 @@ async function loadOverview() {
   document.querySelectorAll("#overview-rows .status-btn").forEach((btn) => {
     btn.addEventListener("click", () => toggleBandStatus(btn.closest("tr")));
   });
+
+  document.querySelectorAll("#overview-rows .delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => deleteBandRow(btn.closest("tr")));
+  });
 }
 
 function overviewRow(band) {
@@ -149,6 +153,7 @@ function overviewRow(band) {
 
   const since = band.assigned_at || band.created_at;
   const locked = band.status === "disabled";
+  const deletable = band.status !== "assigned";
 
   return `
     <tr data-code="${band.code}" data-status="${band.status}" data-has-profile="${Boolean(band.first_name)}">
@@ -159,6 +164,7 @@ function overviewRow(band) {
       <td class="action-cell">
         <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
         <button type="button" class="btn btn-secondary btn-sm status-btn">${locked ? "Freigeben" : "Sperren"}</button>
+        ${deletable ? '<button type="button" class="btn btn-secondary btn-sm delete-btn">Löschen</button>' : ""}
         <span class="write-status"></span>
       </td>
     </tr>`;
@@ -191,6 +197,25 @@ async function toggleBandStatus(row) {
     await Promise.all([loadOverview(), loadStats()]);
   } catch (err) {
     showMessage("overview-error", err.message || "Änderung fehlgeschlagen.");
+    btn.disabled = false;
+  }
+}
+
+async function deleteBandRow(row) {
+  const code = row.dataset.code;
+
+  if (!confirm(`Band ${code} endgültig löschen? Das lässt sich nicht rückgängig machen.`)) {
+    return;
+  }
+
+  const btn = row.querySelector(".delete-btn");
+  btn.disabled = true;
+
+  try {
+    await deleteBand(code);
+    await Promise.all([loadOverview(), loadStats()]);
+  } catch (err) {
+    showMessage("overview-error", err.message || "Löschen fehlgeschlagen.");
     btn.disabled = false;
   }
 }

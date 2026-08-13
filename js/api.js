@@ -113,6 +113,10 @@ async function setBandStatus(code, status) {
   return unwrap(await sb.rpc("set_band_status", { p_code: code, p_status: status }));
 }
 
+async function deleteBand(code) {
+  return unwrap(await sb.rpc("delete_band", { p_code: code }));
+}
+
 async function fetchBandStats() {
   return unwrap(await sb.rpc("band_stats"));
 }
