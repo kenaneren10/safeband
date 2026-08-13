@@ -1614,16 +1614,10 @@ a:hover {
   color: var(--color-text-muted);
 }
 
-.section-header {
+.table-toolbar {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.section-header .btn {
-  flex-shrink: 0;
+  justify-content: flex-end;
+  margin: 1.5rem 0 0.75rem;
 }
 
 #produce-panel {

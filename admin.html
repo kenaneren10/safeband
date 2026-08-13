@@ -56,16 +56,11 @@
       <!-- Übersicht ---------------------------------------------------- -->
       <section class="section">
         <div class="container">
-          <div class="section-header">
-            <div>
-              <h2>Bänder-Übersicht</h2>
-              <p class="section-intro">
-                Der gesamte Bestand: was im Lager liegt, was unterwegs ist und zu wem ein Band gehört.
-                Bänder auf Lager lassen sich hier direkt einer offenen Bestellung zuteilen.
-              </p>
-            </div>
-            <button type="button" id="produce-toggle" class="btn btn-secondary btn-sm">+ Bänder produzieren</button>
-          </div>
+          <h2>Bänder-Übersicht</h2>
+          <p class="section-intro">
+            Der gesamte Bestand: was im Lager liegt, was unterwegs ist und zu wem ein Band gehört.
+            Bänder auf Lager lassen sich hier direkt einer offenen Bestellung zuteilen.
+          </p>
 
           <div id="produce-panel" class="hidden">
             <form id="generate-form" class="inline-form">
@@ -169,6 +164,10 @@
 
           <p id="overview-error" class="form-error hidden" role="alert"></p>
           <p id="overview-empty" class="overview-empty hidden">Keine Bänder gefunden.</p>
+
+          <div class="table-toolbar">
+            <button type="button" id="produce-toggle" class="btn btn-secondary btn-sm">+ Bänder produzieren</button>
+          </div>
 
           <table class="admin-table" id="overview-table">
             <thead>
