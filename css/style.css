@@ -310,6 +310,12 @@ a:hover {
   font-size: 0.875rem;
 }
 
+.icon-btn {
+  padding: 0.4rem 0.55rem;
+  line-height: 1;
+  font-size: 1rem;
+}
+
 /* ─── Landing Hero ─── */
 
 .landing-page .hero {

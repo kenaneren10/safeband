@@ -455,12 +455,12 @@ function profileTableRow(profile) {
     : "<span class='muted'>–</span>";
 
   const mailBtn = profile.contact_email
-    ? `<button type="button" class="btn btn-secondary btn-sm mail-btn" title="Bearbeitungslink senden">✉️</button>`
+    ? `<button type="button" class="btn btn-secondary btn-sm icon-btn mail-btn" title="Bearbeitungslink senden">✉️</button>`
     : "";
 
   const deleteAction = profile.band_code
-    ? "<span class='muted'>Erst Band entfernen</span>"
-    : `<button type="button" class="btn btn-secondary btn-sm profile-table-delete-btn" data-profile-id="${profile.id}">Löschen</button>`;
+    ? "<span class='muted' title='Erst Band entfernen'>🗑️</span>"
+    : `<button type="button" class="btn btn-secondary btn-sm icon-btn profile-table-delete-btn" title="Profil löschen" data-profile-id="${profile.id}">🗑️</button>`;
 
   return `
     <tr>
@@ -468,7 +468,6 @@ function profileTableRow(profile) {
       <td>${CATEGORY_LABELS[profile.category] || profile.category}</td>
       <td>${escapeHtml(profile.contact_phone)}</td>
       <td>${profile.contact_email ? escapeHtml(profile.contact_email) : "<span class='muted'>–</span>"}</td>
-      <td>${profile.order_ref ? escapeHtml(profile.order_ref) : "<span class='muted'>–</span>"}</td>
       <td>${band}</td>
       <td class="date-cell">${new Date(profile.created_at).toLocaleDateString("de-CH")}</td>
       <td class="action-cell"><div class="action-row">${mailBtn}${deleteAction}</div></td>
