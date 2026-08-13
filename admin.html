@@ -56,10 +56,91 @@
       <!-- Übersicht ---------------------------------------------------- -->
       <section class="section">
         <div class="container">
-          <h2>Bänder-Übersicht</h2>
-          <p class="section-intro">
-            Der gesamte Bestand: was im Lager liegt, was unterwegs ist und zu wem ein Band gehört.
-          </p>
+          <div class="section-header">
+            <div>
+              <h2>Bänder-Übersicht</h2>
+              <p class="section-intro">
+                Der gesamte Bestand: was im Lager liegt, was unterwegs ist und zu wem ein Band gehört.
+                Bänder auf Lager lassen sich hier direkt einer offenen Bestellung zuteilen.
+              </p>
+            </div>
+            <button type="button" id="produce-toggle" class="btn btn-secondary btn-sm">+ Bänder produzieren</button>
+          </div>
+
+          <div id="produce-panel" class="hidden">
+            <form id="generate-form" class="inline-form">
+              <div class="form-row">
+                <label for="gen-count">Anzahl</label>
+                <input type="number" id="gen-count" value="20" min="1" max="500" required>
+              </div>
+              <div class="form-row">
+                <label for="gen-batch">Charge (optional)</label>
+                <input type="text" id="gen-batch" placeholder="z.B. 2026-08-A" maxlength="40">
+              </div>
+              <button type="submit" class="btn btn-primary" id="generate-btn">Codes erzeugen</button>
+            </form>
+
+            <p id="generate-error" class="form-error hidden" role="alert"></p>
+
+            <div id="batch-result" class="hidden">
+              <p class="url-warning" role="alert">
+                <strong>⚠️ Jedes Band bekommt seine eigene Adresse.</strong>
+                Auf einen Chip gehört <strong>ausschliesslich</strong> eine Adresse aus der Spalte
+                „URL für den Chip“ – also <code>/n/</code> plus achtstelligem Code. Niemals dieselbe
+                URL auf zwei Chips: beide zeigen sonst auf dasselbe Profil. Und ein persönlicher
+                Verwaltungslink (<code>/verwalten.html?t=…</code>) darf nie auf ein Band, denn er gibt
+                jeder Person, die das Armband scannt, vollen Zugriff auf die Daten inklusive
+                Telefonnummer des Notfallkontakts.
+              </p>
+              <p class="url-warning" role="alert">
+                <strong>⚠️ Basis-Adresse kontrollieren.</strong>
+                Die Chips werden gesperrt – die aufgespielte Adresse lässt sich danach
+                <strong>nicht mehr ändern</strong>. Aktuell würde
+                <code id="band-url-base">–</code> auf die Bänder geschrieben.
+                Steht dort etwas anderes als die endgültige Domain, ist die ganze Charge Ausschuss.
+                In diesem Fall zuerst <code>BAND_URL_ORIGIN</code> in <code>js/config.js</code> setzen.
+              </p>
+              <div class="batch-actions">
+                <button type="button" id="download-csv" class="btn btn-secondary btn-sm">CSV herunterladen</button>
+                <span id="nfc-support" class="nfc-hint"></span>
+              </div>
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Code</th><th>URL für den Chip</th><th>Aktion</th></tr>
+                </thead>
+                <tbody id="batch-rows"></tbody>
+              </table>
+
+              <div class="howto">
+                <h3>Chip mit dem iPhone beschreiben – App „NFC Tools“</h3>
+                <p class="howto-intro">
+                  Pro Band einmal durchlaufen. Erst wenn Schritt 6 funktioniert hat, in Schritt 7
+                  sperren – das lässt sich nicht rückgängig machen.
+                </p>
+                <ol class="howto-steps">
+                  <li>Oben in der Tabelle beim gewünschten Code auf <strong>„URL kopieren“</strong> tippen.</li>
+                  <li>NFC Tools öffnen, Reiter <strong>„Schreiben“</strong>, dann
+                      <strong>„Eine Aufzeichnung hinzufügen“</strong>.</li>
+                  <li><strong>„URL / URI“</strong> wählen, die kopierte Adresse ins Feld einfügen,
+                      mit <strong>„OK“</strong> bestätigen.</li>
+                  <li>Unten auf <strong>„Schreiben“</strong> tippen.</li>
+                  <li>Das Band an das <strong>obere Ende der iPhone-Rückseite</strong> halten, bis
+                      „Schreiben abgeschlossen“ erscheint.</li>
+                  <li><strong>Kontrolle:</strong> App schliessen, das Band nochmals ans iPhone halten.
+                      Es muss oben ein Banner mit <code>www.safeband.ch</code> erscheinen; antippen –
+                      die Notfallseite öffnet sich. Erscheint kein Banner oder eine falsche Adresse:
+                      nicht sperren, Schritt 2 wiederholen.</li>
+                  <li>Zurück in NFC Tools, Reiter <strong>„Sonstige“</strong> →
+                      <strong>„Tag sperren“</strong>, Band erneut anhalten. Damit kann niemand mehr
+                      die Adresse auf dem Band überschreiben.</li>
+                </ol>
+                <p class="howto-note">
+                  Erst ins Lager legen, wenn der Chip gesperrt ist. Ein ungesperrtes Band kann jede
+                  fremde Person mit einem Handy auf eine beliebige Adresse umschreiben.
+                </p>
+              </div>
+            </div>
+          </div>
 
           <div class="overview-controls">
             <div class="form-row">
@@ -73,11 +154,18 @@
             </div>
             <div class="form-row">
               <label for="overview-search">Suche</label>
-              <input type="search" id="overview-search" placeholder="Code, Vorname oder Bestellnummer"
+              <input type="search" id="overview-search"
+                     placeholder="Code, Vorname, Bestellnummer oder gescannte Adresse"
                      autocomplete="off" spellcheck="false">
             </div>
+            <button type="button" id="overview-scan-btn" class="btn btn-secondary btn-sm hidden">Band scannen</button>
             <button type="button" id="overview-refresh" class="btn btn-secondary btn-sm">Aktualisieren</button>
           </div>
+          <small class="field-hint">
+            Mit NFC Tools gelesene oder aus Safari kopierte Adresse lässt sich direkt hier einfügen –
+            der Code wird automatisch herausgelesen und filtert auf die passende Zeile.
+          </small>
+          <small id="overview-scan-status" class="field-hint"></small>
 
           <p id="overview-error" class="form-error hidden" role="alert"></p>
           <p id="overview-empty" class="overview-empty hidden">Keine Bänder gefunden.</p>
@@ -94,6 +182,12 @@
             </thead>
             <tbody id="overview-rows"></tbody>
           </table>
+
+          <p class="field-hint">
+            Wer ein Band ans gesperrte iPhone hält und das Banner antippt, landet in Safari auf der
+            Notfallseite – die meldet „nicht gefunden“, solange kein Profil zugeordnet ist. Das ist
+            richtig und kein Fehler, solange das Band hier noch als „Auf Lager“ geführt wird.
+          </p>
         </div>
       </section>
 
@@ -131,158 +225,6 @@
             </thead>
             <tbody id="orders-rows"></tbody>
           </table>
-        </div>
-      </section>
-
-      <!-- Schritt 1: Produktion --------------------------------------- -->
-      <section class="section">
-        <div class="container">
-          <h2>1. Bänder produzieren</h2>
-          <p class="section-intro">
-            Erzeugt neue Codes auf Vorrat. Danach die Chips beschreiben und schreibschützen –
-            erst dann ins Lager legen.
-          </p>
-
-          <form id="generate-form" class="inline-form">
-            <div class="form-row">
-              <label for="gen-count">Anzahl</label>
-              <input type="number" id="gen-count" value="20" min="1" max="500" required>
-            </div>
-            <div class="form-row">
-              <label for="gen-batch">Charge (optional)</label>
-              <input type="text" id="gen-batch" placeholder="z.B. 2026-08-A" maxlength="40">
-            </div>
-            <button type="submit" class="btn btn-primary" id="generate-btn">Codes erzeugen</button>
-          </form>
-
-          <p id="generate-error" class="form-error hidden" role="alert"></p>
-
-          <div id="batch-result" class="hidden">
-            <p class="url-warning" role="alert">
-              <strong>⚠️ Jedes Band bekommt seine eigene Adresse.</strong>
-              Auf einen Chip gehört <strong>ausschliesslich</strong> eine Adresse aus der Spalte
-              „URL für den Chip“ – also <code>/n/</code> plus achtstelligem Code. Niemals dieselbe
-              URL auf zwei Chips: beide zeigen sonst auf dasselbe Profil. Und ein persönlicher
-              Verwaltungslink (<code>/verwalten.html?t=…</code>) darf nie auf ein Band, denn er gibt
-              jeder Person, die das Armband scannt, vollen Zugriff auf die Daten inklusive
-              Telefonnummer des Notfallkontakts.
-            </p>
-            <p class="url-warning" role="alert">
-              <strong>⚠️ Basis-Adresse kontrollieren.</strong>
-              Die Chips werden gesperrt – die aufgespielte Adresse lässt sich danach
-              <strong>nicht mehr ändern</strong>. Aktuell würde
-              <code id="band-url-base">–</code> auf die Bänder geschrieben.
-              Steht dort etwas anderes als die endgültige Domain, ist die ganze Charge Ausschuss.
-              In diesem Fall zuerst <code>BAND_URL_ORIGIN</code> in <code>js/config.js</code> setzen.
-            </p>
-            <div class="batch-actions">
-              <button type="button" id="download-csv" class="btn btn-secondary btn-sm">CSV herunterladen</button>
-              <span id="nfc-support" class="nfc-hint"></span>
-            </div>
-            <table class="admin-table">
-              <thead>
-                <tr><th>Code</th><th>URL für den Chip</th><th>Aktion</th></tr>
-              </thead>
-              <tbody id="batch-rows"></tbody>
-            </table>
-
-            <div class="howto">
-              <h3>Chip mit dem iPhone beschreiben – App „NFC Tools“</h3>
-              <p class="howto-intro">
-                Pro Band einmal durchlaufen. Erst wenn Schritt 6 funktioniert hat, in Schritt 7
-                sperren – das lässt sich nicht rückgängig machen.
-              </p>
-              <ol class="howto-steps">
-                <li>Oben in der Tabelle beim gewünschten Code auf <strong>„URL kopieren“</strong> tippen.</li>
-                <li>NFC Tools öffnen, Reiter <strong>„Schreiben“</strong>, dann
-                    <strong>„Eine Aufzeichnung hinzufügen“</strong>.</li>
-                <li><strong>„URL / URI“</strong> wählen, die kopierte Adresse ins Feld einfügen,
-                    mit <strong>„OK“</strong> bestätigen.</li>
-                <li>Unten auf <strong>„Schreiben“</strong> tippen.</li>
-                <li>Das Band an das <strong>obere Ende der iPhone-Rückseite</strong> halten, bis
-                    „Schreiben abgeschlossen“ erscheint.</li>
-                <li><strong>Kontrolle:</strong> App schliessen, das Band nochmals ans iPhone halten.
-                    Es muss oben ein Banner mit <code>www.safeband.ch</code> erscheinen; antippen –
-                    die Notfallseite öffnet sich. Erscheint kein Banner oder eine falsche Adresse:
-                    nicht sperren, Schritt 2 wiederholen.</li>
-                <li>Zurück in NFC Tools, Reiter <strong>„Sonstige“</strong> →
-                    <strong>„Tag sperren“</strong>, Band erneut anhalten. Damit kann niemand mehr
-                    die Adresse auf dem Band überschreiben.</li>
-              </ol>
-              <p class="howto-note">
-                Erst ins Lager legen, wenn der Chip gesperrt ist. Ein ungesperrtes Band kann jede
-                fremde Person mit einem Handy auf eine beliebige Adresse umschreiben.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Schritt 2: Versand ------------------------------------------ -->
-      <section class="section section-alt">
-        <div class="container">
-          <h2>2. Band einer Bestellung zuordnen</h2>
-          <p class="section-intro">
-            Beim Verpacken: Code des Bandes auslesen, hier einfügen, Bestellung wählen, zuordnen.
-            Ab diesem Moment zeigt das Band auf das Profil.
-          </p>
-
-          <form id="assign-form" class="assign-grid">
-            <div class="form-row">
-              <label for="assign-code">Band-Code oder gescannte Adresse</label>
-              <div class="scan-row">
-                <input type="text" id="assign-code" placeholder="K7X2M9QP oder https://www.safeband.ch/n/K7X2M9QP"
-                       required autocapitalize="characters" autocomplete="off" spellcheck="false">
-                <button type="button" id="scan-btn" class="btn btn-secondary hidden">Band scannen</button>
-              </div>
-              <small class="field-hint">
-                Am schnellsten mit NFC Tools: Reiter <strong>„Lesen“</strong>, Band anhalten,
-                angezeigte Adresse kopieren und hier einfügen – der Code wird automatisch
-                herausgelesen. Das läuft ohne Internet und ist beim Verpacken einer grösseren
-                Charge der zuverlässigere Weg.
-              </small>
-              <small id="scan-status" class="field-hint"></small>
-            </div>
-
-            <div class="form-row">
-              <label for="assign-profile">Offene Bestellung</label>
-              <select id="assign-profile" required></select>
-              <small><button type="button" id="refresh-pending" class="link-btn">Liste aktualisieren</button></small>
-            </div>
-
-            <button type="submit" class="btn btn-primary" id="assign-btn">Zuordnen</button>
-          </form>
-
-          <p id="assign-error" class="form-error hidden" role="alert"></p>
-          <p id="assign-success" class="success-message hidden" role="status"></p>
-
-          <p class="field-hint">
-            Wer das Band stattdessen ans gesperrte iPhone hält und das Banner antippt, landet in
-            Safari auf der Notfallseite – die meldet „nicht gefunden“, solange kein Profil
-            zugeordnet ist. Das ist richtig und kein Fehler. Die Adresse aus der Safari-Adresszeile
-            lässt sich genauso hier einfügen; bei vielen Bändern hintereinander bremst die
-            Missbrauchssperre diesen Weg allerdings aus.
-          </p>
-        </div>
-      </section>
-
-      <!-- Schritt 3: Sperren ------------------------------------------ -->
-      <section class="section">
-        <div class="container">
-          <h2>3. Band sperren</h2>
-          <p class="section-intro">
-            Bei Verlust oder Reklamation. Die Notfallseite zeigt danach keine Daten mehr an.
-          </p>
-          <form id="disable-form" class="inline-form">
-            <div class="form-row">
-              <label for="disable-code">Band-Code oder Adresse</label>
-              <input type="text" id="disable-code" required autocapitalize="characters"
-                     autocomplete="off" spellcheck="false">
-            </div>
-            <button type="submit" class="btn btn-secondary">Sperren</button>
-          </form>
-          <p id="disable-error" class="form-error hidden" role="alert"></p>
-          <p id="disable-success" class="success-message hidden" role="status"></p>
         </div>
       </section>
     </div>

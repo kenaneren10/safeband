@@ -1,8 +1,9 @@
 /**
  * SafeBand – interne Verwaltung
  *
- * Deckt die drei Handgriffe im Betrieb ab: Codes erzeugen, Chips beschreiben,
- * Band beim Verpacken einer Bestellung zuordnen.
+ * Alles dreht sich um die Bänder-Übersicht: Codes produzieren (+-Button),
+ * Bänder direkt in der Zeile einer offenen Bestellung zuteilen, sperren,
+ * freigeben oder löschen.
  *
  * Beschrieben werden die Chips am iPhone mit „NFC Tools“, deshalb ist die
  * Tabelle auf Kopieren ausgelegt. Web NFC (Chrome auf Android) kann dasselbe
@@ -12,6 +13,7 @@
 const NFC_AVAILABLE = "NDEFReader" in window;
 
 let lastBatch = [];
+let pendingProfiles = [];
 
 const STATUS_LABELS = {
   unassigned: "Auf Lager",
@@ -21,11 +23,10 @@ const STATUS_LABELS = {
 
 document.addEventListener("DOMContentLoaded", () => {
   initLogin();
+  initProducePanel();
   initOverview();
   initOrders();
   initGenerate();
-  initAssign();
-  initDisable();
   restoreSession();
 });
 
@@ -74,8 +75,15 @@ async function enterApp() {
   userEl.textContent = session.user.email;
   userEl.classList.remove("hidden");
 
-  await Promise.all([loadStats(), loadPendingProfiles(), loadOverview(), loadOrders()]);
+  await loadPendingProfiles();
+  await Promise.all([loadStats(), loadOverview(), loadOrders()]);
   showNfcSupport();
+}
+
+function initProducePanel() {
+  document.getElementById("produce-toggle").addEventListener("click", () => {
+    document.getElementById("produce-panel").classList.toggle("hidden");
+  });
 }
 
 async function loadStats() {
@@ -97,6 +105,7 @@ async function loadStats() {
 function initOverview() {
   document.getElementById("overview-refresh").addEventListener("click", loadOverview);
   document.getElementById("overview-status").addEventListener("change", loadOverview);
+  document.getElementById("overview-scan-btn").addEventListener("click", scanToSearch);
 
   // Tippen ohne Enter soll die Liste nicht bei jedem Zeichen neu laden.
   let timer;
@@ -112,11 +121,13 @@ async function loadOverview() {
   const table = document.getElementById("overview-table");
   const empty = document.getElementById("overview-empty");
 
+  const rawSearch = document.getElementById("overview-search").value.trim();
+
   let bands;
   try {
     bands = await fetchBands({
       status: document.getElementById("overview-status").value,
-      search: document.getElementById("overview-search").value.trim(),
+      search: normalizeCode(rawSearch) || rawSearch,
     });
   } catch (err) {
     showMessage("overview-error", err.message || "Übersicht konnte nicht geladen werden.");
@@ -142,6 +153,10 @@ async function loadOverview() {
   document.querySelectorAll("#overview-rows .delete-btn").forEach((btn) => {
     btn.addEventListener("click", () => deleteBandRow(btn.closest("tr")));
   });
+
+  document.querySelectorAll("#overview-rows .assign-btn").forEach((btn) => {
+    btn.addEventListener("click", () => assignBandRow(btn.closest("tr")));
+  });
 }
 
 function overviewRow(band) {
@@ -162,12 +177,48 @@ function overviewRow(band) {
       <td>${owner}</td>
       <td class="date-cell">${new Date(since).toLocaleDateString("de-CH")}</td>
       <td class="action-cell">
+        ${band.status === "unassigned" ? assignControlHtml() : ""}
         <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
         <button type="button" class="btn btn-secondary btn-sm status-btn">${locked ? "Freigeben" : "Sperren"}</button>
         ${deletable ? '<button type="button" class="btn btn-secondary btn-sm delete-btn">Löschen</button>' : ""}
         <span class="write-status"></span>
       </td>
     </tr>`;
+}
+
+function assignControlHtml() {
+  if (!pendingProfiles.length) {
+    return "<span class='muted'>Keine offene Bestellung</span>";
+  }
+
+  const options = pendingProfiles
+    .map((p) => {
+      const date = new Date(p.created_at).toLocaleDateString("de-CH");
+      const label = `${p.order_ref || "ohne Nummer"} – ${p.first_name} (${CATEGORY_LABELS[p.category] || p.category}, ${date})`;
+      return `<option value="${p.id}">${escapeHtml(label)}</option>`;
+    })
+    .join("");
+
+  return `
+    <select class="assign-select">${options}</select>
+    <button type="button" class="btn btn-primary btn-sm assign-btn">Zuteilen</button>`;
+}
+
+async function assignBandRow(row) {
+  const code = row.dataset.code;
+  const profileId = row.querySelector(".assign-select").value;
+  const btn = row.querySelector(".assign-btn");
+
+  btn.disabled = true;
+
+  try {
+    await assignBand(code, profileId);
+    await loadPendingProfiles();
+    await Promise.all([loadOverview(), loadStats()]);
+  } catch (err) {
+    showMessage("overview-error", err.message || "Zuteilen fehlgeschlagen.");
+    btn.disabled = false;
+  }
 }
 
 function badgeClass(status) {
@@ -266,7 +317,7 @@ function orderRow(order) {
     </tr>`;
 }
 
-// --- Schritt 1: Produktion --------------------------------------------------
+// --- Produktion (+-Panel in der Übersicht) -----------------------------------
 
 function initGenerate() {
   document.getElementById("generate-form").addEventListener("submit", async (e) => {
@@ -394,7 +445,7 @@ function showNfcSupport() {
     ? "Dieser Browser kann Chips direkt beschreiben – alternativ zur Anleitung unten."
     : "Chips werden mit „NFC Tools“ beschrieben – Anleitung unterhalb der Tabelle.";
 
-  if (NFC_AVAILABLE) document.getElementById("scan-btn").classList.remove("hidden");
+  if (NFC_AVAILABLE) document.getElementById("overview-scan-btn").classList.remove("hidden");
 }
 
 /**
@@ -448,68 +499,16 @@ function downloadCsv() {
   URL.revokeObjectURL(link.href);
 }
 
-// --- Schritt 2: Zuordnung ---------------------------------------------------
-
-function initAssign() {
-  document.getElementById("refresh-pending").addEventListener("click", loadPendingProfiles);
-  document.getElementById("scan-btn").addEventListener("click", scanBand);
-
-  document.getElementById("assign-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    hide("assign-error");
-    hide("assign-success");
-
-    const btn = document.getElementById("assign-btn");
-    const code = normalizeCode(document.getElementById("assign-code").value);
-
-    if (!code) {
-      showMessage(
-        "assign-error",
-        "Kein gültiger Band-Code erkannt. Erwartet werden acht Zeichen oder eine Adresse der Form " +
-          `${BAND_URL_BASE}/K7X2M9QP.`
-      );
-      return;
-    }
-
-    btn.disabled = true;
-
-    try {
-      await assignBand(code, document.getElementById("assign-profile").value);
-      showMessage("assign-success", `Band ${code} ist zugeordnet und aktiv.`);
-      document.getElementById("assign-code").value = "";
-      await Promise.all([loadPendingProfiles(), loadStats(), loadOverview()]);
-    } catch (err) {
-      showMessage("assign-error", err.message || "Zuordnen fehlgeschlagen.");
-    } finally {
-      btn.disabled = false;
-    }
-  });
-}
-
 async function loadPendingProfiles() {
-  const select = document.getElementById("assign-profile");
-  const profiles = await fetchPendingProfiles();
-
-  if (!profiles.length) {
-    select.innerHTML = '<option value="">Keine offenen Bestellungen</option>';
-    return;
-  }
-
-  select.innerHTML = profiles
-    .map((p) => {
-      const date = new Date(p.created_at).toLocaleDateString("de-CH");
-      const label = `${p.order_ref || "ohne Nummer"} – ${p.first_name} (${CATEGORY_LABELS[p.category] || p.category}, ${date})`;
-      return `<option value="${p.id}">${escapeHtml(label)}</option>`;
-    })
-    .join("");
+  pendingProfiles = await fetchPendingProfiles();
 }
 
-/** Liest den Code aus der URL, die auf dem Chip steht. */
-async function scanBand() {
-  const status = document.getElementById("scan-status");
+/** Liest den Code aus der URL, die auf dem Chip steht, und filtert die Übersicht darauf. */
+async function scanToSearch() {
+  const status = document.getElementById("overview-scan-status");
 
   if (!NFC_AVAILABLE) {
-    status.textContent = "Scannen geht nur in Chrome auf Android – Code bitte abtippen.";
+    status.textContent = "Scannen geht nur in Chrome auf Android – Code bitte in die Suche einfügen.";
     return;
   }
 
@@ -525,8 +524,9 @@ async function scanBand() {
         status.textContent = "Kein SafeBand-Code auf diesem Chip gefunden.";
         return;
       }
-      document.getElementById("assign-code").value = code;
+      document.getElementById("overview-search").value = code;
       status.textContent = `Gelesen: ${code}`;
+      loadOverview();
     };
 
     reader.onreadingerror = () => {
@@ -561,32 +561,6 @@ function normalizeCode(input) {
 
   if (fromUrl) return fromUrl[1].toUpperCase();
   return /^[A-Z0-9]{8}$/i.test(value) ? value.toUpperCase() : null;
-}
-
-// --- Schritt 3: Sperren -----------------------------------------------------
-
-function initDisable() {
-  document.getElementById("disable-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    hide("disable-error");
-    hide("disable-success");
-
-    const code = normalizeCode(document.getElementById("disable-code").value);
-
-    if (!code) {
-      showMessage("disable-error", "Kein gültiger Band-Code erkannt.");
-      return;
-    }
-
-    try {
-      await setBandStatus(code, "disabled");
-      showMessage("disable-success", `Band ${code} ist gesperrt.`);
-      document.getElementById("disable-code").value = "";
-      await Promise.all([loadStats(), loadOverview()]);
-    } catch (err) {
-      showMessage("disable-error", err.message || "Sperren fehlgeschlagen.");
-    }
-  });
 }
 
 // --- Kleinkram --------------------------------------------------------------

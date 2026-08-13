@@ -1559,17 +1559,6 @@ a:hover {
   margin-top: 0.2rem;
 }
 
-.link-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(--color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-  font: inherit;
-  font-size: 0.85rem;
-}
-
 .result-steps ol {
   margin: 0 0 1.5rem 1.1rem;
   color: var(--color-text-muted);
@@ -1623,6 +1612,34 @@ a:hover {
 .badge-stock {
   background: var(--color-bg-alt);
   color: var(--color-text-muted);
+}
+
+.section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-header .btn {
+  flex-shrink: 0;
+}
+
+#produce-panel {
+  margin: 0.5rem 0 1.75rem;
+  padding: 1.5rem;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+}
+
+.assign-select {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  max-width: 16rem;
 }
 
 .overview-controls {
@@ -1739,34 +1756,6 @@ a:hover {
 
 .inline-form .form-row {
   margin-bottom: 0;
-}
-
-.assign-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 1.25rem;
-  align-items: end;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-}
-
-.assign-grid .form-row {
-  margin-bottom: 0;
-}
-
-.scan-row {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.scan-row input {
-  flex: 1;
-  text-transform: uppercase;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  letter-spacing: 0.08em;
 }
 
 .url-warning {
@@ -1959,10 +1948,6 @@ a:hover {
 }
 
 @media (max-width: 720px) {
-  .assign-grid {
-    grid-template-columns: 1fr;
-  }
-
   .band-status {
     gap: 1.5rem;
   }
