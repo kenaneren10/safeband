@@ -177,11 +177,13 @@ function overviewRow(band) {
       <td>${owner}</td>
       <td class="date-cell">${new Date(since).toLocaleDateString("de-CH")}</td>
       <td class="action-cell">
-        ${band.status === "unassigned" ? assignControlHtml() : ""}
-        <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
-        <button type="button" class="btn btn-secondary btn-sm status-btn">${locked ? "Freigeben" : "Sperren"}</button>
-        ${deletable ? '<button type="button" class="btn btn-secondary btn-sm delete-btn">Löschen</button>' : ""}
-        <span class="write-status"></span>
+        ${band.status === "unassigned" ? `<div class="action-row">${assignControlHtml()}</div>` : ""}
+        <div class="action-row">
+          <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
+          <button type="button" class="btn btn-secondary btn-sm status-btn">${locked ? "Freigeben" : "Sperren"}</button>
+          ${deletable ? '<button type="button" class="btn btn-secondary btn-sm delete-btn">Löschen</button>' : ""}
+          <span class="write-status"></span>
+        </div>
       </td>
     </tr>`;
 }
@@ -193,8 +195,7 @@ function assignControlHtml() {
 
   const options = pendingProfiles
     .map((p) => {
-      const date = new Date(p.created_at).toLocaleDateString("de-CH");
-      const label = `${p.order_ref || "ohne Nummer"} – ${p.first_name} (${CATEGORY_LABELS[p.category] || p.category}, ${date})`;
+      const label = `${p.order_ref || "ohne Nummer"} – ${p.first_name} (${CATEGORY_LABELS[p.category] || p.category})`;
       return `<option value="${p.id}">${escapeHtml(label)}</option>`;
     })
     .join("");
@@ -354,13 +355,15 @@ function renderBatch(codes) {
           <td><code>${code}</code></td>
           <td class="url-cell"><code>${bandUrl(code)}</code></td>
           <td class="action-cell">
-            <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
-            ${
-              NFC_AVAILABLE
-                ? '<button type="button" class="btn btn-secondary btn-sm write-btn">Auf Chip schreiben</button>'
-                : ""
-            }
-            <span class="write-status"></span>
+            <div class="action-row">
+              <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
+              ${
+                NFC_AVAILABLE
+                  ? '<button type="button" class="btn btn-secondary btn-sm write-btn">Auf Chip schreiben</button>'
+                  : ""
+              }
+              <span class="write-status"></span>
+            </div>
           </td>
         </tr>`
     )

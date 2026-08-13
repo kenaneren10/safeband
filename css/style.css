@@ -1633,7 +1633,10 @@ a:hover {
   border-radius: 8px;
   font-family: inherit;
   font-size: 0.875rem;
-  max-width: 16rem;
+  width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .overview-controls {
@@ -1865,6 +1868,14 @@ a:hover {
 }
 
 .action-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 15rem;
+}
+
+.action-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
