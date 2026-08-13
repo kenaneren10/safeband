@@ -13,8 +13,15 @@ const NFC_AVAILABLE = "NDEFReader" in window;
 
 let lastBatch = [];
 
+const STATUS_LABELS = {
+  unassigned: "Auf Lager",
+  assigned: "Im Einsatz",
+  disabled: "Gesperrt",
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   initLogin();
+  initOverview();
   initGenerate();
   initAssign();
   initDisable();
@@ -66,27 +73,125 @@ async function enterApp() {
   userEl.textContent = session.user.email;
   userEl.classList.remove("hidden");
 
-  await Promise.all([loadStats(), loadPendingProfiles()]);
+  await Promise.all([loadStats(), loadPendingProfiles(), loadOverview()]);
   showNfcSupport();
 }
 
 async function loadStats() {
   const stats = (await fetchBandStats()) || {};
-  const labels = {
-    unassigned: "Auf Lager",
-    assigned: "Im Einsatz",
-    disabled: "Gesperrt",
-  };
 
-  document.getElementById("stats").innerHTML = Object.keys(labels)
+  document.getElementById("stats").innerHTML = Object.keys(STATUS_LABELS)
     .map(
       (key) => `
         <div class="stat-card">
           <span class="stat-value">${stats[key] || 0}</span>
-          <span class="stat-label">${labels[key]}</span>
+          <span class="stat-label">${STATUS_LABELS[key]}</span>
         </div>`
     )
     .join("");
+}
+
+// --- Übersicht --------------------------------------------------------------
+
+function initOverview() {
+  document.getElementById("overview-refresh").addEventListener("click", loadOverview);
+  document.getElementById("overview-status").addEventListener("change", loadOverview);
+
+  // Tippen ohne Enter soll die Liste nicht bei jedem Zeichen neu laden.
+  let timer;
+  document.getElementById("overview-search").addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(loadOverview, 300);
+  });
+}
+
+async function loadOverview() {
+  hide("overview-error");
+
+  const table = document.getElementById("overview-table");
+  const empty = document.getElementById("overview-empty");
+
+  let bands;
+  try {
+    bands = await fetchBands({
+      status: document.getElementById("overview-status").value,
+      search: document.getElementById("overview-search").value.trim(),
+    });
+  } catch (err) {
+    showMessage("overview-error", err.message || "Übersicht konnte nicht geladen werden.");
+    return;
+  }
+
+  table.classList.toggle("hidden", bands.length === 0);
+  empty.classList.toggle("hidden", bands.length > 0);
+
+  document.getElementById("overview-rows").innerHTML = bands.map(overviewRow).join("");
+
+  document.querySelectorAll("#overview-rows .copy-btn").forEach((btn) => {
+    const row = btn.closest("tr");
+    btn.addEventListener("click", () =>
+      copyUrl(bandUrl(row.dataset.code), row.querySelector(".write-status"))
+    );
+  });
+
+  document.querySelectorAll("#overview-rows .status-btn").forEach((btn) => {
+    btn.addEventListener("click", () => toggleBandStatus(btn.closest("tr")));
+  });
+}
+
+function overviewRow(band) {
+  const owner = band.first_name
+    ? `${escapeHtml(band.first_name)}${
+        band.order_ref ? ` <small>${escapeHtml(band.order_ref)}</small>` : ""
+      }`
+    : "<span class='muted'>–</span>";
+
+  const since = band.assigned_at || band.created_at;
+  const locked = band.status === "disabled";
+
+  return `
+    <tr data-code="${band.code}" data-status="${band.status}" data-has-profile="${Boolean(band.first_name)}">
+      <td><code>${band.code}</code></td>
+      <td><span class="badge ${badgeClass(band.status)}">${STATUS_LABELS[band.status] || band.status}</span></td>
+      <td>${owner}</td>
+      <td class="date-cell">${new Date(since).toLocaleDateString("de-CH")}</td>
+      <td class="action-cell">
+        <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
+        <button type="button" class="btn btn-secondary btn-sm status-btn">${locked ? "Freigeben" : "Sperren"}</button>
+        <span class="write-status"></span>
+      </td>
+    </tr>`;
+}
+
+function badgeClass(status) {
+  if (status === "assigned") return "badge-ok";
+  if (status === "disabled") return "badge-off";
+  return "badge-stock";
+}
+
+/**
+ * Beim Freigeben zurück in den Zustand vor der Sperre: Bänder mit Profil
+ * sind wieder im Einsatz, unbenutzte liegen wieder im Lager.
+ */
+async function toggleBandStatus(row) {
+  const code = row.dataset.code;
+  const locked = row.dataset.status === "disabled";
+  const hasProfile = row.dataset.hasProfile === "true";
+
+  if (!locked && !confirm(`Band ${code} sperren? Die Notfallseite zeigt danach keine Daten mehr.`)) {
+    return;
+  }
+
+  const btn = row.querySelector(".status-btn");
+  btn.disabled = true;
+
+  try {
+    await setBandStatus(code, locked ? (hasProfile ? "assigned" : "unassigned") : "disabled");
+    await Promise.all([loadOverview(), loadStats()]);
+  } catch (err) {
+    showMessage("overview-error", err.message || "Änderung fehlgeschlagen.");
+    btn.disabled = false;
+  }
 }
 
 // --- Schritt 1: Produktion --------------------------------------------------
@@ -106,7 +211,7 @@ function initGenerate() {
         document.getElementById("gen-batch").value.trim()
       );
       renderBatch(lastBatch);
-      await loadStats();
+      await Promise.all([loadStats(), loadOverview()]);
     } catch (err) {
       showMessage("generate-error", err.message || "Erzeugen fehlgeschlagen.");
     } finally {
@@ -141,8 +246,11 @@ function renderBatch(codes) {
   document.getElementById("band-url-base").textContent = `${BAND_URL_BASE}/…`;
   document.getElementById("batch-result").classList.remove("hidden");
 
-  document.querySelectorAll(".copy-btn").forEach((btn) => {
-    btn.addEventListener("click", () => copyBandUrl(btn.closest("tr")));
+  document.querySelectorAll("#batch-rows .copy-btn").forEach((btn) => {
+    const row = btn.closest("tr");
+    btn.addEventListener("click", () =>
+      copyUrl(bandUrl(row.dataset.code), row.querySelector(".write-status"))
+    );
   });
 
   document.querySelectorAll(".write-btn").forEach((btn) => {
@@ -155,10 +263,7 @@ function renderBatch(codes) {
  * noch eingefügt werden muss. Abtippen wäre die wahrscheinlichste Fehlerquelle
  * im ganzen Ablauf – ein vertippter Code landet gesperrt auf dem Chip.
  */
-async function copyBandUrl(row) {
-  const url = bandUrl(row.dataset.code);
-  const status = row.querySelector(".write-status");
-
+async function copyUrl(url, status) {
   if (await copyText(url)) {
     status.textContent = "Kopiert";
     status.className = "write-status ok";
@@ -300,7 +405,7 @@ function initAssign() {
       await assignBand(code, document.getElementById("assign-profile").value);
       showMessage("assign-success", `Band ${code} ist zugeordnet und aktiv.`);
       document.getElementById("assign-code").value = "";
-      await Promise.all([loadPendingProfiles(), loadStats()]);
+      await Promise.all([loadPendingProfiles(), loadStats(), loadOverview()]);
     } catch (err) {
       showMessage("assign-error", err.message || "Zuordnen fehlgeschlagen.");
     } finally {
@@ -322,7 +427,7 @@ async function loadPendingProfiles() {
     .map((p) => {
       const date = new Date(p.created_at).toLocaleDateString("de-CH");
       const label = `${p.order_ref || "ohne Nummer"} – ${p.first_name} (${CATEGORY_LABELS[p.category] || p.category}, ${date})`;
-      return `<option value="${p.id}">${label}</option>`;
+      return `<option value="${p.id}">${escapeHtml(label)}</option>`;
     })
     .join("");
 }
@@ -405,7 +510,7 @@ function initDisable() {
       await setBandStatus(code, "disabled");
       showMessage("disable-success", `Band ${code} ist gesperrt.`);
       document.getElementById("disable-code").value = "";
-      await loadStats();
+      await Promise.all([loadStats(), loadOverview()]);
     } catch (err) {
       showMessage("disable-error", err.message || "Sperren fehlgeschlagen.");
     }
@@ -418,6 +523,14 @@ function showMessage(id, text) {
   const el = document.getElementById(id);
   el.textContent = text;
   el.classList.remove("hidden");
+}
+
+/** Kundeneingaben landen per innerHTML in der Tabelle und müssen entschärft werden. */
+function escapeHtml(value) {
+  return String(value).replace(
+    /[&<>"']/g,
+    (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]
+  );
 }
 
 function hide(id) {

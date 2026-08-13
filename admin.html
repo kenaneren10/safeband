@@ -53,6 +53,50 @@
         </div>
       </section>
 
+      <!-- Übersicht ---------------------------------------------------- -->
+      <section class="section">
+        <div class="container">
+          <h2>Bänder-Übersicht</h2>
+          <p class="section-intro">
+            Der gesamte Bestand: was im Lager liegt, was unterwegs ist und zu wem ein Band gehört.
+          </p>
+
+          <div class="overview-controls">
+            <div class="form-row">
+              <label for="overview-status">Status</label>
+              <select id="overview-status">
+                <option value="">Alle</option>
+                <option value="unassigned">Auf Lager</option>
+                <option value="assigned">Im Einsatz</option>
+                <option value="disabled">Gesperrt</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="overview-search">Suche</label>
+              <input type="search" id="overview-search" placeholder="Code, Vorname oder Bestellnummer"
+                     autocomplete="off" spellcheck="false">
+            </div>
+            <button type="button" id="overview-refresh" class="btn btn-secondary btn-sm">Aktualisieren</button>
+          </div>
+
+          <p id="overview-error" class="form-error hidden" role="alert"></p>
+          <p id="overview-empty" class="overview-empty hidden">Keine Bänder gefunden.</p>
+
+          <table class="admin-table" id="overview-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Status</th>
+                <th>Zugeordnet an</th>
+                <th>Seit</th>
+                <th>Aktion</th>
+              </tr>
+            </thead>
+            <tbody id="overview-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- Schritt 1: Produktion --------------------------------------- -->
       <section class="section">
         <div class="container">

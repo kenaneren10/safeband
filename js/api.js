@@ -112,3 +112,13 @@ async function setBandStatus(code, status) {
 async function fetchBandStats() {
   return unwrap(await sb.rpc("band_stats"));
 }
+
+async function fetchBands({ status, search } = {}) {
+  return unwrap(
+    await sb.rpc("list_bands", {
+      p_status: status || null,
+      p_search: search || null,
+      p_limit: 200,
+    })
+  );
+}
