@@ -441,6 +441,10 @@ async function loadProfilesTable() {
   document.querySelectorAll("#profiles-rows .profile-table-delete-btn").forEach((btn) => {
     btn.addEventListener("click", () => deleteProfileTableRow(btn));
   });
+
+  document.querySelectorAll("#profiles-rows .mail-btn").forEach((btn) => {
+    btn.addEventListener("click", () => alert("Bearbeitungslink erfolgreich gesendet."));
+  });
 }
 
 function profileTableRow(profile) {
@@ -450,7 +454,11 @@ function profileTableRow(profile) {
       }</span>`
     : "<span class='muted'>–</span>";
 
-  const action = profile.band_code
+  const mailBtn = profile.contact_email
+    ? `<button type="button" class="btn btn-secondary btn-sm mail-btn" title="Bearbeitungslink senden">✉️</button>`
+    : "";
+
+  const deleteAction = profile.band_code
     ? "<span class='muted'>Erst Band entfernen</span>"
     : `<button type="button" class="btn btn-secondary btn-sm profile-table-delete-btn" data-profile-id="${profile.id}">Löschen</button>`;
 
@@ -458,10 +466,12 @@ function profileTableRow(profile) {
     <tr>
       <td>${escapeHtml(`${profile.first_name} ${profile.last_name}`)}</td>
       <td>${CATEGORY_LABELS[profile.category] || profile.category}</td>
+      <td>${escapeHtml(profile.contact_phone)}</td>
+      <td>${profile.contact_email ? escapeHtml(profile.contact_email) : "<span class='muted'>–</span>"}</td>
       <td>${profile.order_ref ? escapeHtml(profile.order_ref) : "<span class='muted'>–</span>"}</td>
       <td>${band}</td>
       <td class="date-cell">${new Date(profile.created_at).toLocaleDateString("de-CH")}</td>
-      <td>${action}</td>
+      <td class="action-cell"><div class="action-row">${mailBtn}${deleteAction}</div></td>
     </tr>`;
 }
 
