@@ -35,9 +35,9 @@
         <h1>Armband einrichten</h1>
         <p id="order-notice" class="page-notice page-notice--top hidden">
           Diese Seite ist für Kundinnen und Kunden nach dem Kauf gedacht – normalerweise kommst du
-          über den Link in deiner Bestellbestätigung hierher. Hast du deine Bestellnummer zur Hand,
-          kannst du sie unten von Hand eintragen. Noch kein Armband?
-          <a href="bestellen.html">Hier geht's zur Bestellung.</a>
+          über den Link in deiner Bestellbestätigung hierher, der dein Profil automatisch mit der
+          Bestellung verknüpft. Du kannst trotzdem fortfahren, wir ordnen das Band dann von Hand zu.
+          Noch kein Armband? <a href="bestellen.html">Hier geht's zur Bestellung.</a>
         </p>
         <p>
           Vielen Dank für deine Bestellung. Hinterlege hier die Daten für dein Armband – wir
@@ -55,11 +55,7 @@
         <form id="setup-form" class="setup-form">
           <h2>Profil-Daten</h2>
 
-          <div class="form-row">
-            <label for="order-ref">Bestellnummer *</label>
-            <input type="text" id="order-ref" placeholder="z.B. SB-10427" required maxlength="40">
-            <small>Steht in deiner Bestellbestätigung. Damit ordnen wir dir das richtige Band zu.</small>
-          </div>
+          <input type="hidden" id="order-ref">
 
           <div class="form-split">
             <div class="form-row">
