@@ -162,19 +162,15 @@ async function loadOverview() {
   });
 
   document.querySelectorAll("#overview-rows .assign-btn").forEach((btn) => {
-    btn.addEventListener("click", () => assignBandRow(btn.closest("tr"), btn.dataset.profileId));
+    btn.addEventListener("click", () => assignBandRow(btn, { profileId: btn.dataset.profileId }));
+  });
+
+  document.querySelectorAll("#overview-rows .assign-order-btn").forEach((btn) => {
+    btn.addEventListener("click", () => assignBandRow(btn, { orderRef: btn.dataset.orderRef }));
   });
 
   document.querySelectorAll("#overview-rows .profile-delete-btn").forEach((btn) => {
     btn.addEventListener("click", () => deleteProfileRow(btn));
-  });
-
-  document.querySelectorAll("#overview-rows .reserve-btn").forEach((btn) => {
-    btn.addEventListener("click", () => reserveBandRow(btn));
-  });
-
-  document.querySelectorAll("#overview-rows .release-btn").forEach((btn) => {
-    btn.addEventListener("click", () => releaseReservationRow(btn.closest("tr")));
   });
 }
 
@@ -184,8 +180,8 @@ function overviewRow(band) {
     owner = `${escapeHtml(`${band.first_name} ${band.last_name}`)}${
       band.order_ref ? ` <small>${escapeHtml(band.order_ref)}</small>` : ""
     }`;
-  } else if (band.reserved) {
-    owner = `<span class="muted">Reserviert <small>${escapeHtml(band.order_ref)}</small></span>`;
+  } else if (band.pending_profile) {
+    owner = `${escapeHtml(band.order_ref)} <small class="muted">wartet auf Notfalldaten</small>`;
   }
 
   const since = band.assigned_at || band.created_at;
@@ -203,7 +199,6 @@ function overviewRow(band) {
         <div class="action-row">
           <button type="button" class="btn btn-secondary btn-sm copy-btn">URL kopieren</button>
           ${unassigned ? '<button type="button" class="btn btn-secondary btn-sm assign-toggle-btn">Zuteilen</button>' : ""}
-          ${band.reserved ? '<button type="button" class="btn btn-secondary btn-sm release-btn">Reservierung aufheben</button>' : ""}
           <button type="button" class="btn btn-secondary btn-sm status-btn">${locked ? "Freigeben" : "Sperren"}</button>
           ${deletable ? '<button type="button" class="btn btn-secondary btn-sm delete-btn">Löschen</button>' : ""}
           <span class="write-status"></span>
@@ -221,7 +216,7 @@ function assignPanelHtml() {
         <li>
           <span>${escapeHtml(label)}</span>
           <span class="assign-list-actions">
-            <button type="button" class="btn btn-primary btn-sm assign-btn" data-profile-id="${p.id}">Zuweisen</button>
+            <button type="button" class="btn btn-primary btn-sm assign-btn" data-profile-id="${p.id}">Zuteilen</button>
             <button type="button" class="btn btn-secondary btn-sm profile-delete-btn" data-profile-id="${p.id}">Löschen</button>
           </span>
         </li>`;
@@ -235,7 +230,7 @@ function assignPanelHtml() {
         <li>
           <span>${escapeHtml(label)} <small class="muted">wartet auf Notfalldaten</small></span>
           <span class="assign-list-actions">
-            <button type="button" class="btn btn-secondary btn-sm reserve-btn" data-order-ref="${escapeHtml(o.order_ref)}">Reservieren</button>
+            <button type="button" class="btn btn-primary btn-sm assign-order-btn" data-order-ref="${escapeHtml(o.order_ref)}">Zuteilen</button>
           </span>
         </li>`;
     })
@@ -247,7 +242,7 @@ function assignPanelHtml() {
 
   let html = "";
   if (readyItems) {
-    html += `<p class="assign-group-title">Bereit zum Zuweisen</p><ul class="assign-list">${readyItems}</ul>`;
+    html += `<p class="assign-group-title">Bereit zum Zuteilen</p><ul class="assign-list">${readyItems}</ul>`;
   }
   if (waitingItems) {
     html += `
@@ -279,52 +274,14 @@ async function deleteProfileRow(btn) {
   }
 }
 
-async function reserveBandRow(btn) {
-  const row = btn.closest("tr");
-  const code = row.dataset.code;
-  const orderRef = btn.dataset.orderRef;
+async function assignBandRow(btn, { profileId, orderRef }) {
+  const code = btn.closest("tr").dataset.code;
 
   btn.disabled = true;
 
   try {
-    await reserveBand(code, orderRef);
-    await loadOrders();
-    await Promise.all([loadOverview(), loadStats()]);
-  } catch (err) {
-    showMessage("overview-error", err.message || "Reservieren fehlgeschlagen.");
-    btn.disabled = false;
-  }
-}
-
-async function releaseReservationRow(row) {
-  const code = row.dataset.code;
-
-  if (!confirm(`Reservierung für Band ${code} aufheben?`)) {
-    return;
-  }
-
-  const btn = row.querySelector(".release-btn");
-  btn.disabled = true;
-
-  try {
-    await releaseBandReservation(code);
-    await loadOrders();
-    await Promise.all([loadOverview(), loadStats()]);
-  } catch (err) {
-    showMessage("overview-error", err.message || "Aufheben fehlgeschlagen.");
-    btn.disabled = false;
-  }
-}
-
-async function assignBandRow(row, profileId) {
-  const code = row.dataset.code;
-  const btn = row.querySelector(`.assign-btn[data-profile-id="${profileId}"]`);
-
-  btn.disabled = true;
-
-  try {
-    await assignBand(code, profileId);
-    await loadPendingProfiles();
+    await assignBand(code, { profileId, orderRef });
+    await Promise.all([loadPendingProfiles(), loadOrders()]);
     await Promise.all([loadOverview(), loadStats()]);
   } catch (err) {
     showMessage("overview-error", err.message || "Zuteilen fehlgeschlagen.");
@@ -414,14 +371,14 @@ async function loadOrders() {
 
   document.getElementById("orders-rows").innerHTML = orders.map(orderRow).join("");
 
-  pendingOrders = orders.filter((o) => !o.has_profile && !o.reserved_band_code);
+  pendingOrders = orders.filter((o) => !o.has_profile && !o.assigned_band_code);
 }
 
 function orderRow(order) {
   const statusText = order.has_profile
     ? "Hinterlegt"
-    : order.reserved_band_code
-      ? `Reserviert <small>${escapeHtml(order.reserved_band_code)}</small>`
+    : order.assigned_band_code
+      ? `Zugeteilt <small>${escapeHtml(order.assigned_band_code)}</small>`
       : "Ausstehend";
   const statusClass = order.has_profile ? "badge-ok" : "badge-stock";
 

@@ -105,8 +105,14 @@ async function fetchPendingProfiles() {
   return unwrap(await sb.rpc("pending_profiles"));
 }
 
-async function assignBand(code, profileId) {
-  return unwrap(await sb.rpc("assign_band", { p_code: code, p_profile_id: profileId }));
+async function assignBand(code, { profileId, orderRef } = {}) {
+  return unwrap(
+    await sb.rpc("assign_band", {
+      p_code: code,
+      p_profile_id: profileId || null,
+      p_order_ref: orderRef || null,
+    })
+  );
 }
 
 async function setBandStatus(code, status) {
@@ -119,14 +125,6 @@ async function deleteBand(code) {
 
 async function deleteProfile(profileId) {
   return unwrap(await sb.rpc("delete_profile", { p_profile_id: profileId }));
-}
-
-async function reserveBand(code, orderRef) {
-  return unwrap(await sb.rpc("reserve_band", { p_code: code, p_order_ref: orderRef }));
-}
-
-async function releaseBandReservation(code) {
-  return unwrap(await sb.rpc("release_band_reservation", { p_code: code }));
 }
 
 async function fetchBandStats() {
