@@ -1649,6 +1649,12 @@ a:hover {
   font-size: 0.85rem;
 }
 
+.assign-list-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.4rem;
+}
+
 .overview-controls {
   display: flex;
   flex-wrap: wrap;

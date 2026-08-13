@@ -117,6 +117,10 @@ async function deleteBand(code) {
   return unwrap(await sb.rpc("delete_band", { p_code: code }));
 }
 
+async function deleteProfile(profileId) {
+  return unwrap(await sb.rpc("delete_profile", { p_profile_id: profileId }));
+}
+
 async function fetchBandStats() {
   return unwrap(await sb.rpc("band_stats"));
 }

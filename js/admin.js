@@ -163,6 +163,10 @@ async function loadOverview() {
   document.querySelectorAll("#overview-rows .assign-btn").forEach((btn) => {
     btn.addEventListener("click", () => assignBandRow(btn.closest("tr"), btn.dataset.profileId));
   });
+
+  document.querySelectorAll("#overview-rows .profile-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => deleteProfileRow(btn));
+  });
 }
 
 function overviewRow(band) {
@@ -207,12 +211,37 @@ function assignPanelHtml() {
       return `
         <li>
           <span>${escapeHtml(label)}</span>
-          <button type="button" class="btn btn-primary btn-sm assign-btn" data-profile-id="${p.id}">Zuweisen</button>
+          <span class="assign-list-actions">
+            <button type="button" class="btn btn-primary btn-sm assign-btn" data-profile-id="${p.id}">Zuweisen</button>
+            <button type="button" class="btn btn-secondary btn-sm profile-delete-btn" data-profile-id="${p.id}">Löschen</button>
+          </span>
         </li>`;
     })
     .join("");
 
   return `<ul class="assign-list">${items}</ul>`;
+}
+
+/**
+ * Für verwaiste Test-Profile: mehrfach ausgefüllte einrichten.html-Formulare
+ * mit derselben Bestellnummer erzeugen mehrere Profile, von denen nur eines
+ * je einem Band zugeordnet wird. Die übrigen häufen sich hier sonst dauerhaft an.
+ */
+async function deleteProfileRow(btn) {
+  if (!confirm("Dieses Profil endgültig löschen? Das lässt sich nicht rückgängig machen.")) {
+    return;
+  }
+
+  btn.disabled = true;
+
+  try {
+    await deleteProfile(btn.dataset.profileId);
+    await loadPendingProfiles();
+    loadOverview();
+  } catch (err) {
+    showMessage("overview-error", err.message || "Löschen fehlgeschlagen.");
+    btn.disabled = false;
+  }
 }
 
 async function assignBandRow(row, profileId) {
